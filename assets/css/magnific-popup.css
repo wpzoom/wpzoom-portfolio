@@ -200,7 +200,9 @@ button::-moz-focus-inner {
   .mfp-arrow:after {
     margin: -6.5px 0 0 -6.5px;
     border-bottom: 2px solid #fff;
-    border-right: 2px solid #fff; }
+    border-right: 2px solid #fff;
+    border-left: none;
+    border-top: none; }
   .mfp-arrow:before {
     display: none; }
 
