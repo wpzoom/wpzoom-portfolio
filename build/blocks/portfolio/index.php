@@ -84,6 +84,10 @@ class WPZOOM_Blocks_Portfolio {
 			'type'    => 'boolean',
 			'default' => false
 		],
+		'videoLightboxIcon' => [
+			'type'    => 'string',
+			'default' => 'circle'
+		],
 		'order' => [
 			'type'    => 'string',
 			'default' => 'desc'

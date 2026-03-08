@@ -187,7 +187,6 @@ button::-moz-focus-inner {
     transform: scale(0.97); }
   .mfp-arrow:hover,
   .mfp-arrow:focus {
-    background: rgba(10, 10, 10, 0.55);
     border-color: rgba(255, 255, 255, 0.7); }
   .mfp-arrow:before,
   .mfp-arrow:after {
