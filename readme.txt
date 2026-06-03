@@ -164,7 +164,7 @@ Yes! View the full [Plugin Documentation](https://www.wpzoom.com/documentation/w
 == Changelog ==
 
 = 1.4.23 =
-* Fixed: "The editor has encountered an unexpected error" in Firefox when switching from the Visual Editor to the Code Editor. The masonry-init script now unsubscribes from `wp.data` on iframe teardown so its callback no longer touches a dead window (Firefox throws `NS_ERROR_NOT_INITIALIZED` in that case; Chrome silently no-op'd). Reported by a user on Firefox 151 / WordPress 7.0.
+* Fixed an error in Firefox
 
 = 1.4.22 =
 * Security: fixed a reflected XSS in the `wpzoom_load_more_items` AJAX handler by sanitizing the `class` value before it is used in output and restricting it to CSS-class-safe characters.
