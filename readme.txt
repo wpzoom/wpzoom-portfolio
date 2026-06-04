@@ -164,6 +164,7 @@ Yes! View the full [Plugin Documentation](https://www.wpzoom.com/documentation/w
 == Changelog ==
 
 = 1.4.24 =
+* New: "Hide Title on Hover" option (Portfolio block → Fields panel, visible when "Show Title" is on for grid or masonry layouts) — fades the title overlay out on hover to reveal the clean image (or hover video).
 * New: "Item Border Radius" option (Portfolio block → Content Settings) — rounds the corners of items in the grid (overlay) and masonry layouts.
 * New: "Border Radius" option for the Load More / View All buttons (Portfolio block → Buttons panel).
 
