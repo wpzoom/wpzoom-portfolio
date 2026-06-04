@@ -291,6 +291,14 @@ class WPZOOM_Blocks_Portfolio {
 		'btnHoverBorderColor' => [
 			'type' => 'string',
 		],
+		'btnBorderRadius' => [
+			'type'    => 'number',
+			'default' => 0
+		],
+		'itemBorderRadius' => [
+			'type'    => 'number',
+			'default' => 0
+		],
 	];
 
 	/**
@@ -681,17 +689,36 @@ class WPZOOM_Blocks_Portfolio {
 
 		}
 
+		$btnBorderRadius = isset( $attr['btnBorderRadius'] ) && intval( $attr['btnBorderRadius'] ) > 0
+			? 'border-radius:' . intval( $attr['btnBorderRadius'] ) . 'px;'
+			: '';
+
 		$button_style = '.wpzoom-blocks_portfolio-block.' . $class_unique . ' .wpz-portfolio-button__link {' .
-			$btnTextColor . 
+			$btnTextColor .
 			$btnBgColor .
-			$btnFontFamily . 
-			$btnFontSize . 
-			$btnTextTransform . 
+			$btnFontFamily .
+			$btnFontSize .
+			$btnTextTransform .
 			$btnLetterSpacing .
-			$btnBorderStyle . 
-			$btnBorderWidth . 
+			$btnBorderStyle .
+			$btnBorderWidth .
 			$btnBorderColor .
+			$btnBorderRadius .
 		'}';
+
+		// Item border-radius for grid (overlay) and masonry layouts. Applied
+		// to both the item-wrap and the item-thumbnail so the radius shows
+		// regardless of which element is the visible card surface; the
+		// existing SCSS already sets overflow:hidden on both, so child
+		// images get clipped correctly.
+		$item_border_radius = '';
+		if ( isset( $attr[ 'itemBorderRadius' ] ) && intval( $attr['itemBorderRadius'] ) > 0 && in_array( $layout, array( 'grid', 'masonry' ), true ) ) {
+			$radius_px = intval( $attr['itemBorderRadius'] ) . 'px';
+			$item_border_radius =
+				'.wpzoom-blocks_portfolio-block.' . $class_unique . ' .wpzoom-blocks_portfolio-block_item-wrap,' .
+				'.wpzoom-blocks_portfolio-block.' . $class_unique . ' .wpzoom-blocks_portfolio-block_item-thumbnail' .
+				'{border-radius:' . $radius_px . ';}';
+		}
 
 		if( isset( $attr['btnHoverBgColor'] ) || isset( $attr['btnHoverTextColor'] ) || isset( $attr['btnHoverBorderColor'] ) ) {
 
@@ -746,7 +773,7 @@ class WPZOOM_Blocks_Portfolio {
 
 		$masonry_columns_gap = isset( $attr[ 'columnsGap' ] ) && ( 0 !== $attr[ 'columnsGap' ] ) ? $masonry_selectors : '';
 
-		$css = sprintf( 
+		$css = sprintf(
 			'<style>%s</style>',
 			$general_style .
 			$filter_color .
@@ -754,12 +781,13 @@ class WPZOOM_Blocks_Portfolio {
 			$filter_color_active .
 			$filter_align .
 			$filter_style .
-			$post_title . 
+			$post_title .
 			$post_title_hover .
 			$button_style .
-            $button_color_hover . 
+            $button_color_hover .
 			$columns_gap .
-			$masonry_columns_gap . 
+			$masonry_columns_gap .
+			$item_border_radius .
 			$layout_style .
 			$mobile_style
 		);
