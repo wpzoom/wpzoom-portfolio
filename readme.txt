@@ -1,5 +1,5 @@
 === WPZOOM Portfolio Lite - Filterable Portfolio Plugin ===
-Contributors:      WPZOOM, alexus450, ciorici
+Contributors:      WPZOOM, ciorici
 Donate link:       http://paypal.me/wpzm/10usd
 Author URI:        https://www.wpzoom.com/
 Requires at least: 6.5
