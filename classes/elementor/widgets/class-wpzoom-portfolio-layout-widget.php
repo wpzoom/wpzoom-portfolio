@@ -185,7 +185,7 @@ class WPZOOM_Portfolio_Layout_Widget extends Widget_Base {
 		$layout_id = ! empty( $settings['layout_id'] ) ? absint( $settings['layout_id'] ) : 0;
 
 		if ( ! $layout_id ) {
-			if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+			if ( $this->is_elementor_editor() ) {
 				printf(
 					'<div class="wpzoom-portfolio-layout-placeholder elementor-alert elementor-alert-info">%s</div>',
 					esc_html__( 'Please select a Portfolio Layout from the panel on the left.', 'wpzoom-portfolio' )
@@ -204,10 +204,25 @@ class WPZOOM_Portfolio_Layout_Widget extends Widget_Base {
 			WPZOOM_Portfolio_Assets_Manager::instance()->enqueue_portfolio_assets();
 		}
 
+		// Some themes (e.g. Inspiro Premium) hook the portfolio block's
+		// `wpzoom_portfolio_block_item_media` filter to inject a hover-video
+		// layer. That layer relies on CSS/JS that only loads on the frontend, so
+		// inside the Elementor editor the injected <video> renders its poster as
+		// a duplicate of the thumbnail. A static editor preview can't show hover
+		// anyway, so suppress the injected media while editing.
+		$suppress_hover_media = $this->is_elementor_editor();
+		if ( $suppress_hover_media ) {
+			add_filter( 'wpzoom_portfolio_block_item_media', '__return_empty_string', PHP_INT_MAX );
+		}
+
 		// Render through the existing shortcode so output and asset enqueuing
 		// match the Gutenberg "Portfolio Layouts" block exactly. The portfolio
 		// block style is auto-enqueued by render_block() inside the shortcode.
 		$html = do_shortcode( sprintf( '[wpzoom_portfolio_layout id="%d"]', $layout_id ) );
+
+		if ( $suppress_hover_media ) {
+			remove_filter( 'wpzoom_portfolio_block_item_media', '__return_empty_string', PHP_INT_MAX );
+		}
 
 		// Elementor's global Image Lightbox auto-opens any link to an image file
 		// inside Elementor content. The portfolio already uses its own Magnific
@@ -218,5 +233,31 @@ class WPZOOM_Portfolio_Layout_Widget extends Widget_Base {
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered, trusted block content from do_shortcode().
 		echo $html;
+	}
+
+	/**
+	 * Whether the widget is currently being rendered inside the Elementor
+	 * editor (the editor itself, its AJAX element re-renders, or the preview
+	 * iframe). Used to skip behaviour that only makes sense on the frontend.
+	 *
+	 * @since 1.4.27
+	 * @return bool
+	 */
+	protected function is_elementor_editor() {
+		if ( ! class_exists( '\Elementor\Plugin' ) ) {
+			return false;
+		}
+
+		$plugin = \Elementor\Plugin::$instance;
+
+		if ( isset( $plugin->editor ) && $plugin->editor->is_edit_mode() ) {
+			return true;
+		}
+
+		if ( isset( $plugin->preview ) && method_exists( $plugin->preview, 'is_preview_mode' ) && $plugin->preview->is_preview_mode() ) {
+			return true;
+		}
+
+		return false;
 	}
 }
