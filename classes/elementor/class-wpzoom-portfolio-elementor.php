@@ -55,6 +55,7 @@ if ( ! class_exists( 'WPZOOM_Portfolio_Elementor' ) ) {
 		public function __construct() {
 			add_action( 'elementor/elements/categories_registered', array( $this, 'add_widget_category' ) );
 			add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
+			add_action( 'elementor/editor/before_enqueue_scripts', array( $this, 'enqueue_editor_styles' ) );
 		}
 
 		/**
@@ -85,6 +86,25 @@ if ( ! class_exists( 'WPZOOM_Portfolio_Elementor' ) ) {
 			require_once __DIR__ . '/widgets/class-wpzoom-portfolio-layout-widget.php';
 
 			$widgets_manager->register( new WPZOOM_Portfolio_Layout_Widget() );
+		}
+
+		/**
+		 * Enqueue editor-only styles.
+		 *
+		 * Floats the "WPZOOM Portfolio" category to the top of the Elementor
+		 * widget panel (via flex ordering), matching the behaviour of the
+		 * WPZOOM Forms plugin.
+		 *
+		 * @since 1.4.27
+		 * @return void
+		 */
+		public function enqueue_editor_styles() {
+			wp_enqueue_style(
+				'wpzoom-portfolio-elementor-editor',
+				WPZOOM_PORTFOLIO_URL . 'classes/elementor/assets/editor.css',
+				array(),
+				WPZOOM_PORTFOLIO_VERSION
+			);
 		}
 	}
 
