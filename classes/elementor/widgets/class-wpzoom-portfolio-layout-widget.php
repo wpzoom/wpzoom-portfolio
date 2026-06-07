@@ -169,6 +169,22 @@ class WPZOOM_Portfolio_Layout_Widget extends Widget_Base {
 					'description' => esc_html__( 'Choose a saved Portfolio Layout to display.', 'wpzoom-portfolio' ),
 				)
 			);
+
+			$this->add_control(
+				'manage_layouts_link',
+				array(
+					'type'            => Controls_Manager::RAW_HTML,
+					'raw'             => sprintf(
+						/* translators: 1: opening "manage" anchor tag, 2: closing anchor, 3: opening "add new" anchor tag, 4: closing anchor. */
+						esc_html__( '%1$sManage Portfolio Layouts%2$s or %3$sadd a new one%4$s.', 'wpzoom-portfolio' ),
+						'<a href="' . esc_url( admin_url( 'edit.php?post_type=portfolio_layout' ) ) . '" target="_blank">',
+						'</a>',
+						'<a href="' . esc_url( admin_url( 'post-new.php?post_type=portfolio_layout' ) ) . '" target="_blank">',
+						'</a>'
+					),
+					'content_classes' => 'elementor-descriptor',
+				)
+			);
 		}
 
 		$this->end_controls_section();
