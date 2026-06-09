@@ -1,0 +1,36 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"meta": {
+		"title": "WPZOOM Portfolio Lite – Live Preview",
+		"description": "A ready-to-explore portfolio with sample projects, categories, a filterable gallery and lightbox."
+	},
+	"landingPage": "/portfolio-demo/",
+	"preferredVersions": {
+		"php": "8.0",
+		"wp": "latest"
+	},
+	"phpExtensionBundles": [
+		"kitchen-sink"
+	],
+	"features": {
+		"networking": true
+	},
+	"steps": [
+		{
+			"step": "login",
+			"username": "admin",
+			"password": "password"
+		},
+		{
+			"step": "setSiteOptions",
+			"options": {
+				"permalink_structure": "/%postname%/",
+				"blogname": "WPZOOM Portfolio Demo"
+			}
+		},
+		{
+			"step": "runPHP",
+			"code": "<?php require_once '/wordpress/wp-load.php'; require_once ABSPATH . 'wp-admin/includes/media.php'; require_once ABSPATH . 'wp-admin/includes/file.php'; require_once ABSPATH . 'wp-admin/includes/image.php'; flush_rewrite_rules(); $cats = array( 'Photography', 'Branding', 'Web Design', 'Illustration' ); $term_ids = array(); foreach ( $cats as $c ) { $t = term_exists( $c, 'portfolio' ); if ( ! $t ) { $t = wp_insert_term( $c, 'portfolio' ); } if ( ! is_wp_error( $t ) ) { $term_ids[ $c ] = (int) $t['term_id']; } } $projects = array( array( 'Mountain Editorial', 'Photography', 1015 ), array( 'Coastal Series', 'Photography', 1019 ), array( 'Urban Frames', 'Photography', 1011 ), array( 'Aurora Identity', 'Branding', 1025 ), array( 'Loop Studio Brand', 'Branding', 1039 ), array( 'Northwind Logo', 'Branding', 1043 ), array( 'Folio Landing Page', 'Web Design', 1050 ), array( 'Studio Portfolio Site', 'Web Design', 1062 ), array( 'Linework Posters', 'Illustration', 1074 ) ); foreach ( $projects as $i => $p ) { list( $title, $cat, $seed ) = $p; if ( get_page_by_title( $title, OBJECT, 'portfolio_item' ) ) { continue; } $post_id = wp_insert_post( array( 'post_title' => $title, 'post_type' => 'portfolio_item', 'post_status' => 'publish', 'post_content' => 'A sample portfolio project showcasing the work of a creative studio. Replace this with your own projects, images and descriptions.', 'post_excerpt' => 'Sample ' . $cat . ' project created for this live preview.' ) ); if ( $post_id && ! is_wp_error( $post_id ) ) { if ( isset( $term_ids[ $cat ] ) ) { wp_set_object_terms( $post_id, array( $term_ids[ $cat ] ), 'portfolio' ); } $url = 'https://picsum.photos/seed/' . $seed . '/800/600.jpg'; $att_id = media_sideload_image( $url, $post_id, $title, 'id' ); if ( ! is_wp_error( $att_id ) ) { set_post_thumbnail( $post_id, $att_id ); } } } $page_content = '<!-- wp:heading {\"level\":1} --><h1>Our Portfolio</h1><!-- /wp:heading --><!-- wp:paragraph --><p>Filter the projects by category and click any item to open it in the lightbox.</p><!-- /wp:paragraph --><!-- wp:wpzoom-blocks/portfolio {\"source\":\"portfolio_item\",\"amount\":9,\"layout\":\"masonry\",\"columnsAmount\":3,\"lightbox\":true,\"showCategoryFilter\":true,\"showExcerpt\":true,\"showReadMore\":false} /-->'; $existing = get_page_by_path( 'portfolio-demo' ); if ( ! $existing ) { wp_insert_post( array( 'post_title' => 'Portfolio Demo', 'post_name' => 'portfolio-demo', 'post_type' => 'page', 'post_status' => 'publish', 'post_content' => $page_content ) ); } flush_rewrite_rules();"
+		}
+	]
+}
