@@ -30,6 +30,8 @@ Portfolio plugin for WordPress. Create filterable portfolio grids with masonry l
 ✅ **Mobile Responsive** - Portfolio galleries look perfect on all devices
 
 [**View Demo**](https://demo.wpzoom.com/inspiro-lite/portfolio/)
+⭐️  **[View PRO Demo](https://demo.wpzoom.com/portfolio-pro/)** ⭐️
+
 
 ###💪 Want More Power? Try WPZOOM Portfolio PRO
 
