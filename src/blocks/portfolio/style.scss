@@ -745,10 +745,22 @@ $primary_color: #0bb4aa;
         cursor: pointer;
     }
 
-    .wpzoom-blocks_portfolio-block_item-details .wpzoom-blocks_portfolio-block_item-title a::after {
+    // Stretch the THUMBNAIL's permalink anchor (rel="bookmark") over the
+    // whole card. We deliberately use the thumbnail link, NOT the title
+    // link: on items with a video lightbox, Pro slides the title down with
+    // `transform: translateY()` on hover, and a transformed ancestor would
+    // become the containing block for this pseudo-element — shrinking it to
+    // the title's box (so only the title stayed clickable). The thumbnail
+    // link is never transformed, so the overlay always fills the card.
+    //
+    // z-index sits ABOVE the details overlay (z-index 12 on hover) so a
+    // click on the dimmed overlay navigates, but BELOW the lightbox icon
+    // (.popup_image_icon / .popup_video_icon, z-index 80) so the image /
+    // video lightbox still opens.
+    .wpzoom-blocks_portfolio-block_item-thumbnail a[rel~="bookmark"]::after {
         content: '';
         position: absolute;
         inset: 0;
-        z-index: 5;
+        z-index: 70;
     }
 }
