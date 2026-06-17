@@ -101,6 +101,75 @@ class WPZOOM_Portfolio_Admin_Menu {
 			5
 		);
 
+		// Photo Proofing upsell. Only when PRO is not active — when PRO is
+		// active it registers the real Proofing Galleries submenu in this slot.
+		// Note: no theme check here. Photo Proofing isn't bundled in any WPZOOM
+		// theme, so the upsell should show even on those themes.
+		if ( ! defined( 'WPZOOM_PORTFOLIO_PRO_VERSION' ) ) {
+			add_submenu_page(
+				'edit.php?post_type=portfolio_item',
+				esc_html__( 'Photo Proofing', 'wpzoom-portfolio' ),
+				esc_html__( 'Photo Proofing', 'wpzoom-portfolio' ),
+				'manage_options',
+				'upsell',
+				array( $this, 'proofing_upsell_page' )
+			);
+		}
+
+	}
+
+	/**
+	 * Render the Photo Proofing upsell page (free version only).
+	 *
+	 * @since 1.4.28
+	 */
+	public function proofing_upsell_page() {
+		$pro_url = 'https://www.wpzoom.com/plugins/portfolio-pro/?utm_source=wpadmin&utm_medium=portfolio-free&utm_campaign=proofing-upsell';
+		?>
+		<div class="wrap">
+		<h1><?php esc_html_e( 'Photo Proofing', 'wpzoom-portfolio' ); ?></h1>
+			<div class="wpzoom-portfolio-proofing-upsell">
+				<h2><?php esc_html_e( 'Unlock Photo Proofing with WPZOOM Portfolio PRO', 'wpzoom-portfolio' ); ?><span class="wpzoom-proofing-pro-badge"><?php esc_html_e( 'PRO', 'wpzoom-portfolio' ); ?></span></h2>
+
+				<p class="wpzoom-proofing-upsell-lead"><?php esc_html_e( 'Create private proofing galleries, share them with clients through a secret link, and collect their photo selections for approval — all from your WordPress dashboard.', 'wpzoom-portfolio' ); ?></p>
+
+				<ul class="wpzoom-proofing-upsell-features">
+					<li><?php esc_html_e( 'Private galleries shared via a unique secret link', 'wpzoom-portfolio' ); ?></li>
+					<li><?php esc_html_e( 'Clients pick their favorite photos right from the browser', 'wpzoom-portfolio' ); ?></li>
+					<li><?php esc_html_e( 'Track selections and approvals without email back-and-forth', 'wpzoom-portfolio' ); ?></li>
+					<li><?php esc_html_e( 'Galleries are kept out of search engines and sitemaps', 'wpzoom-portfolio' ); ?></li>
+				</ul>
+
+				<p>
+					<a href="<?php echo esc_url( $pro_url ); ?>" target="_blank" class="button button-primary button-hero"><?php esc_html_e( 'Upgrade to PRO', 'wpzoom-portfolio' ); ?></a>
+				</p>
+			</div>
+		</div>
+
+		<style>
+			
+			.wpzoom-portfolio-proofing-upsell { 
+				max-width: 720px; 
+				margin-top: 30px; 
+				background-color: #fff; 
+				padding: 40px; 
+				border-radius: 4px; 
+			}
+			.wpzoom-proofing-pro-badge {
+				background-color: #3858e9;
+				color: #fff;
+				font-size: 12px;
+				border-radius: 4px;
+				padding: 4px 8px;
+				vertical-align: middle;
+				font-weight: 600;
+				margin-left: 6px;
+			 }
+			.wpzoom-proofing-upsell-lead { font-size: 15px; max-width: 640px; }
+			.wpzoom-proofing-upsell-features { list-style: disc; padding-left: 20px; margin: 20px 0; }
+			.wpzoom-proofing-upsell-features li { font-size: 14px; margin-bottom: 8px; }
+		</style>
+		<?php
 	}
 
 	/**
