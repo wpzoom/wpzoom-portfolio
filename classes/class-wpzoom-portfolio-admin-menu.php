@@ -134,10 +134,10 @@ class WPZOOM_Portfolio_Admin_Menu {
 				<p class="wpzoom-proofing-upsell-lead"><?php esc_html_e( 'Create private proofing galleries, share them with clients through a secret link, and collect their photo selections for approval — all from your WordPress dashboard.', 'wpzoom-portfolio' ); ?></p>
 
 				<ul class="wpzoom-proofing-upsell-features">
-					<li><?php esc_html_e( 'Private galleries shared via a unique secret link', 'wpzoom-portfolio' ); ?></li>
-					<li><?php esc_html_e( 'Clients pick their favorite photos right from the browser', 'wpzoom-portfolio' ); ?></li>
-					<li><?php esc_html_e( 'Track selections and approvals without email back-and-forth', 'wpzoom-portfolio' ); ?></li>
-					<li><?php esc_html_e( 'Galleries are kept out of search engines and sitemaps', 'wpzoom-portfolio' ); ?></li>
+					<li><?php esc_html_e( 'Clients mark their favorite photos right in the browser — no accounts or logins needed', 'wpzoom-portfolio' ); ?></li>
+					<li><?php esc_html_e( 'One-click approval locks in the final selection, and you get an instant email', 'wpzoom-portfolio' ); ?></li>
+					<li><?php esc_html_e( 'Track every gallery\'s status — pending or approved — from your dashboard', 'wpzoom-portfolio' ); ?></li>
+					<li><?php esc_html_e( 'Each gallery stays private behind a unique, unguessable link', 'wpzoom-portfolio' ); ?></li>
 				</ul>
 
 				<p>
