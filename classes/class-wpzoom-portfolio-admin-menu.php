@@ -124,36 +124,81 @@ class WPZOOM_Portfolio_Admin_Menu {
 	 * @since 1.4.28
 	 */
 	public function proofing_upsell_page() {
-		$pro_url = 'https://www.wpzoom.com/plugins/portfolio-pro/?utm_source=wpadmin&utm_medium=portfolio-free&utm_campaign=proofing-upsell';
+		$pro_url   = 'https://www.wpzoom.com/plugins/portfolio-pro/?utm_source=wpadmin&utm_medium=portfolio-free&utm_campaign=proofing-upsell';
+		$image_url = WPZOOM_PORTFOLIO_URL . 'assets/images/photo-proofing.png';
+
+		$steps = array(
+			array(
+				'title' => esc_html__( 'Create a gallery', 'wpzoom-portfolio' ),
+				'text'  => esc_html__( 'Upload your photos and publish a private proofing gallery in just a few seconds.', 'wpzoom-portfolio' ),
+			),
+			array(
+				'title' => esc_html__( 'Share the secret link', 'wpzoom-portfolio' ),
+				'text'  => esc_html__( 'Send your client a unique, unguessable link — no account or login required on their end.', 'wpzoom-portfolio' ),
+			),
+			array(
+				'title' => esc_html__( 'Get their approval', 'wpzoom-portfolio' ),
+				'text'  => esc_html__( 'Your client marks their favorites and approves. You get an instant email with the final selection.', 'wpzoom-portfolio' ),
+			),
+		);
 		?>
 		<div class="wrap">
-		<h1><?php esc_html_e( 'Photo Proofing', 'wpzoom-portfolio' ); ?></h1>
+			<h1><?php esc_html_e( 'Photo Proofing', 'wpzoom-portfolio' ); ?></h1>
+
 			<div class="wpzoom-portfolio-proofing-upsell">
-				<h2><?php esc_html_e( 'Unlock Photo Proofing with WPZOOM Portfolio PRO', 'wpzoom-portfolio' ); ?><span class="wpzoom-proofing-pro-badge"><?php esc_html_e( 'PRO', 'wpzoom-portfolio' ); ?></span></h2>
 
-				<p class="wpzoom-proofing-upsell-lead"><?php esc_html_e( 'Create private proofing galleries, share them with clients through a secret link, and collect their photo selections for approval — all from your WordPress dashboard.', 'wpzoom-portfolio' ); ?></p>
+				<div class="wpzoom-proofing-upsell-hero">
+					<div class="wpzoom-proofing-upsell-header">
+						<h2>
+							<?php esc_html_e( 'Unlock Photo Proofing with WPZOOM Portfolio PRO', 'wpzoom-portfolio' ); ?>
+							<span class="wpzoom-proofing-pro-badge"><?php esc_html_e( 'PRO', 'wpzoom-portfolio' ); ?></span>
+						</h2>
 
-				<ul class="wpzoom-proofing-upsell-features">
-					<li><?php esc_html_e( 'Clients mark their favorite photos right in the browser — no accounts or logins needed', 'wpzoom-portfolio' ); ?></li>
-					<li><?php esc_html_e( 'One-click approval locks in the final selection, and you get an instant email', 'wpzoom-portfolio' ); ?></li>
-					<li><?php esc_html_e( 'Track every gallery\'s status — pending or approved — from your dashboard', 'wpzoom-portfolio' ); ?></li>
-					<li><?php esc_html_e( 'Each gallery stays private behind a unique, unguessable link', 'wpzoom-portfolio' ); ?></li>
-				</ul>
+						<p class="wpzoom-proofing-upsell-lead"><?php esc_html_e( 'Create private proofing galleries, share them with clients through a secret link, and collect their photo selections for approval — all from your WordPress dashboard.', 'wpzoom-portfolio' ); ?></p>
 
-				<p>
-					<a href="<?php echo esc_url( $pro_url ); ?>" target="_blank" class="button button-primary button-hero"><?php esc_html_e( 'Upgrade to PRO', 'wpzoom-portfolio' ); ?></a>
-				</p>
+						<p>
+							<a href="<?php echo esc_url( $pro_url ); ?>" target="_blank" class="button button-primary button-hero"><?php esc_html_e( 'Upgrade to PRO', 'wpzoom-portfolio' ); ?></a>
+						</p>
+					</div>
+
+					<div class="wpzoom-proofing-upsell-image">
+						<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php esc_attr_e( 'Photo Proofing preview', 'wpzoom-portfolio' ); ?>" />
+					</div>
+				</div>
+
+				<div class="wpzoom-proofing-steps">
+					<?php foreach ( $steps as $index => $step ) : ?>
+						<div class="wpzoom-proofing-step">
+							<div class="wpzoom-proofing-step-head">
+								<span class="wpzoom-proofing-step-number"><?php echo esc_html( $index + 1 ); ?></span>
+								<span class="wpzoom-proofing-step-line"></span>
+							</div>
+							<h3 class="wpzoom-proofing-step-title"><?php echo esc_html( $step['title'] ); ?></h3>
+							<p class="wpzoom-proofing-step-text"><?php echo esc_html( $step['text'] ); ?></p>
+						</div>
+					<?php endforeach; ?>
+				</div>
+
 			</div>
 		</div>
 
 		<style>
-			
-			.wpzoom-portfolio-proofing-upsell { 
-				max-width: 720px; 
-				margin-top: 30px; 
-				background-color: #fff; 
-				padding: 40px; 
-				border-radius: 4px; 
+			/* Make the whole admin page white, not just the upsell box. */
+			#wpcontent, #wpbody-content { background-color: #fff; }
+			.wpzoom-portfolio-proofing-upsell {
+				max-width: 1080px;
+				margin: 30px auto 0;
+			}
+			.wpzoom-proofing-upsell-hero {
+				display: flex;
+				align-items: center;
+				gap: 40px;
+			}
+			.wpzoom-proofing-upsell-header { flex: 1 1 40%; }
+			.wpzoom-portfolio-proofing-upsell h2 { 
+				font-size: 22px; 
+				margin-top: 0;
+				line-height: 1.4;
 			}
 			.wpzoom-proofing-pro-badge {
 				background-color: #3858e9;
@@ -164,10 +209,62 @@ class WPZOOM_Portfolio_Admin_Menu {
 				vertical-align: middle;
 				font-weight: 600;
 				margin-left: 6px;
-			 }
+			}
 			.wpzoom-proofing-upsell-lead { font-size: 15px; max-width: 640px; }
-			.wpzoom-proofing-upsell-features { list-style: disc; padding-left: 20px; margin: 20px 0; }
-			.wpzoom-proofing-upsell-features li { font-size: 14px; margin-bottom: 8px; }
+			.wpzoom-proofing-upsell-image {
+				flex: 1 1 60%;
+			}
+			.wpzoom-proofing-upsell-image img {
+				display: block;
+				width: 100%;
+				height: auto;
+				border-radius: 6px;
+				border: 1px solid #e2e4e7;
+			}
+			.wpzoom-proofing-steps {
+				display: flex;
+				gap: 40px;
+				margin-top: 100px;
+			}
+			.wpzoom-proofing-step { flex: 1; }
+			.wpzoom-proofing-step-head {
+				display: flex;
+				align-items: center;
+				margin-bottom: 18px;
+			}
+			.wpzoom-proofing-step-number {
+				flex: 0 0 auto;
+				width: 44px;
+				height: 44px;
+				border-radius: 50%;
+				background-color: #1a1a1a;
+				color: #fff;
+				font-size: 16px;
+				font-weight: 700;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			.wpzoom-proofing-step-line {
+				flex: 1 1 auto;
+				height: 1px;
+				background-color: #e2e4e7;
+				margin-left: 16px;
+			}
+			.wpzoom-proofing-step-title {
+				font-size: 18px;
+				font-weight: 700;
+				margin: 0 0 10px;
+			}
+			.wpzoom-proofing-step-text {
+				font-size: 14px;
+				color: #50575e;
+				margin: 0;
+			}
+			@media screen and (max-width: 782px) {
+				.wpzoom-proofing-upsell-hero { flex-direction: column; align-items: stretch; }
+				.wpzoom-proofing-steps { flex-direction: column; gap: 30px; }
+			}
 		</style>
 		<?php
 	}
