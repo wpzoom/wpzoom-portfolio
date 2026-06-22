@@ -170,7 +170,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 			lightboxCaption, order, orderBy, readMoreLabel, showAuthor, showCategoryFilter, enableAjaxLoading, showDate,
 			showExcerpt, showReadMore, showThumbnail, showViewAll, source, thumbnailSize, viewAllLabel, viewAllLink, primaryColor, secondaryColor, filterActiveColor, filterAlignment, filterFontSize, filterFontFamily, filterTextTransform, filterLetterSpacing, filterFontWeight, postTitleFontSize, postTitleFontSizeMobile,
 			postTitleTextTransform, postTitleLetterSpacing, postTitleFontFamily, postTitleFontWeight, postTitleLineHeight, postTitleColor, postHoverTitleColor, btnTextColor, btnHoverTextColor, btnBgColor, btnHoverBgColor, btnFontFamily, btnFontSize, btnTextTransform, btnLetterSpacing, btnBorder, btnBorderStyle, btnBorderWidth,
-			btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable } = attributes;
+			btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, albumLightbox } = attributes;
 
 	const post_type = wp.data.select( 'core/editor' ).getCurrentPostType();
 	const post_id   = wp.data.select( 'core/editor' ).getCurrentPost().id;
@@ -558,6 +558,14 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 									label={ __( 'Show Lightbox Caption', 'wpzoom-portfolio' ) }
 									checked={ lightboxCaption }
 									onChange={ ( value ) => setAttributes( { lightboxCaption: value } ) }
+								/>
+							}
+							{ isPro &&
+								<ToggleControl
+									label={ __( 'Open Album in Lightbox', 'wpzoom-portfolio' ) }
+									help={ __( 'When a portfolio item has album images set, show an album icon that opens them in a lightbox gallery.', 'wpzoom-portfolio' ) }
+									checked={ albumLightbox }
+									onChange={ ( value ) => setAttributes( { albumLightbox: value } ) }
 								/>
 							}
 							{ ( 'grid' === layout || 'masonry' === layout ) &&
