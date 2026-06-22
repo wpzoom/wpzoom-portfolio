@@ -568,7 +568,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 									onChange={ ( value ) => setAttributes( { entireItemClickable: value } ) }
 								/>
 							}
-							{ entireItemClickable && ( 'grid' === layout || 'masonry' === layout ) &&
+							{ entireItemClickable && lightbox && ( 'grid' === layout || 'masonry' === layout ) &&
 								<SelectControl
 									label={ __( 'On Item Click', 'wpzoom-portfolio' ) }
 									value={ entireItemAction }
@@ -576,7 +576,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 										{ label: __( 'Open Single Portfolio Page', 'wpzoom-portfolio' ), value: 'link' },
 										{ label: __( 'Open Lightbox', 'wpzoom-portfolio' ), value: 'lightbox' },
 									] }
-									help={ 'lightbox' === entireItemAction && ! lightbox ? __( 'Enable "Open Portfolio Items in a Lightbox" above for this to work.', 'wpzoom-portfolio' ) : __( 'Choose what happens when clicking anywhere on the item.', 'wpzoom-portfolio' ) }
+									help={ __( 'Choose what happens when clicking anywhere on the item.', 'wpzoom-portfolio' ) }
 									onChange={ ( value ) => setAttributes( { entireItemAction: value } ) }
 								/>
 							}
