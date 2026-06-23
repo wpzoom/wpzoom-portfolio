@@ -350,7 +350,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								{ images.length > 0 && (
 									<>
 										<ul className="wpz-portfolio-media-control__grid">
-											{ images.map( ( img, index ) => (
+											{ images.slice( 0, 9 ).map( ( img, index ) => (
 												<li key={ img.id || index } className="wpz-portfolio-media-control__item">
 													<img src={ img.url } alt={ img.alt || '' } />
 													<button
@@ -365,11 +365,17 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 											) ) }
 										</ul>
 										<p className="wpz-portfolio-media-control__help">
-											{ sprintf(
-												/* translators: %d: number of selected images. */
-												_n( '%d image selected.', '%d images selected.', images.length, 'wpzoom-portfolio' ),
-												images.length
-											) }
+											{ images.length > 9
+												? sprintf(
+													/* translators: %d: total number of selected images. */
+													__( 'Showing 9 of %d images.', 'wpzoom-portfolio' ),
+													images.length
+												)
+												: sprintf(
+													/* translators: %d: number of selected images. */
+													_n( '%d image selected.', '%d images selected.', images.length, 'wpzoom-portfolio' ),
+													images.length
+												) }
 										</p>
 									</>
 								) }
