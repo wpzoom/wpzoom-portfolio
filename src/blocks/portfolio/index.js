@@ -1005,7 +1005,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 						multiple
 					/>
 				) : (
-					<ServerSideRender block="wpzoom-blocks/portfolio" attributes={ attributes } />
+					<ServerSideRender block="wpzoom-blocks/portfolio" attributes={ attributes } httpMethod="POST" />
 				) }
 			</div>
 		</>
