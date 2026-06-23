@@ -18,7 +18,6 @@ import {
 	HorizontalRule,
 	PanelBody,
 	Placeholder,
-	RadioControl,
 	RangeControl,
 	SelectControl,
 	Spinner,
@@ -59,7 +58,11 @@ import {
 	filterIcon,
 	layoutIcon,
 	settingsIcon,
-	shortcodeIcon
+	shortcodeIcon,
+	layoutColumnsIcon,
+	layoutOverlayIcon,
+	layoutMasonryIcon,
+	layoutEccentricIcon
 } from '../../icons';
 
 /**
@@ -339,31 +342,11 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							value={ source }
 							options={ customPosts }
 							onChange={ ( value ) => setAttributes( { source: value, categories: [] } ) }
+							__next40pxDefaultSize
 						/>
 
 						{ 'media' === source && (
 							<div className="wpz-portfolio-media-control">
-								<MediaUploadCheck>
-									<MediaUpload
-										gallery
-										multiple
-										addToGallery
-										allowedTypes={ [ 'image' ] }
-										value={ images.map( ( img ) => img.id ).filter( Boolean ) }
-										onSelect={ onSelectImages }
-										render={ ( { open } ) => (
-											<Button
-												variant="secondary"
-												onClick={ open }
-												className="wpz-portfolio-media-control__button"
-											>
-												{ images.length > 0
-													? __( 'Edit Images', 'wpzoom-portfolio' )
-													: __( 'Add Images', 'wpzoom-portfolio' ) }
-											</Button>
-										) }
-									/>
-								</MediaUploadCheck>
 								{ images.length > 0 && (
 									<>
 										<ul className="wpz-portfolio-media-control__grid">
@@ -390,12 +373,34 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 										</p>
 									</>
 								) }
+								<MediaUploadCheck>
+									<MediaUpload
+										gallery
+										multiple
+										addToGallery
+										allowedTypes={ [ 'image' ] }
+										value={ images.map( ( img ) => img.id ).filter( Boolean ) }
+										onSelect={ onSelectImages }
+										render={ ( { open } ) => (
+											<Button
+												variant="secondary"
+												onClick={ open }
+												className="wpz-portfolio-media-control__button"
+											>
+												{ images.length > 0
+													? __( 'Edit Gallery', 'wpzoom-portfolio' )
+													: __( 'Add Images', 'wpzoom-portfolio' ) }
+											</Button>
+										) }
+									/>
+								</MediaUploadCheck>
 							</div>
 						) }
 
 						{ 'media' !== source && ( <>
 
 						<SelectControl
+							__next40pxDefaultSize
 							label={ __( 'Order By', 'wpzoom-portfolio' ) }
 							value={ `${ orderBy }/${ order }` }
 							options={ [
@@ -482,24 +487,42 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 					</PanelBody>
 					<PanelBody icon={ layoutIcon } title={ __( 'Layout', 'wpzoom-portfolio' ) } initialOpen={ sectionOpen } className="wpzb-settings-panel">
 						<div className="wpzb-layout-options">
-							<RadioControl
-								className="wpzb-button-select wpzb-button-select-icons"
+							<BaseControl
+								className="wpzb-layout-type-control"
 								label={ __( 'Layout Type', 'wpzoom-portfolio' ) }
-								onChange={ ( value ) => setAttributes( { layout: value } ) }
-								options={ [
-									{ value: 'list',    label: __( 'Columns', 'wpzoom-portfolio' ) },
-									{ value: 'grid',    label: __( 'Overlay', 'wpzoom-portfolio' ) },
-									{ value: 'masonry', label: __( 'Masonry', 'wpzoom-portfolio' ) },
-									...( 'media' !== source ? [ {
-										value: 'eccentric',
-										label: (
-											<div
-												className="wpzb-layout-option-eccentric"
-												onMouseEnter={ () => setShowEccentricTooltip( true ) }
-												onMouseLeave={ () => setShowEccentricTooltip( false ) }
+							>
+								<div
+									className="wpzb-layout-type"
+									role="radiogroup"
+									aria-label={ __( 'Layout Type', 'wpzoom-portfolio' ) }
+								>
+									{ [
+										{ value: 'list',      label: __( 'Columns', 'wpzoom-portfolio' ),   icon: layoutColumnsIcon },
+										{ value: 'grid',      label: __( 'Overlay', 'wpzoom-portfolio' ),   icon: layoutOverlayIcon },
+										{ value: 'masonry',   label: __( 'Masonry', 'wpzoom-portfolio' ),   icon: layoutMasonryIcon },
+										...( 'media' !== source ? [ { value: 'eccentric', label: __( 'Eccentric', 'wpzoom-portfolio' ), icon: layoutEccentricIcon, pro: true } ] : [] )
+									].map( ( option ) => {
+										const isSelected = layout === option.value;
+										const isLocked   = option.pro && ! isPro;
+
+										return (
+											<button
+												key={ option.value }
+												type="button"
+												role="radio"
+												aria-checked={ isSelected }
+												className={ [
+													'wpzb-layout-type__option',
+													isSelected ? 'is-selected' : '',
+													isLocked ? 'is-pro-locked' : ''
+												].filter( Boolean ).join( ' ' ) }
+												onClick={ () => setAttributes( { layout: option.value } ) }
+												onMouseEnter={ option.pro ? () => setShowEccentricTooltip( true ) : undefined }
+												onMouseLeave={ option.pro ? () => setShowEccentricTooltip( false ) : undefined }
 											>
-												<span>{ __( 'Eccentric', 'wpzoom-portfolio' ) }</span>
-												{ ! isPro && showEccentricTooltip && (
+												<span className="wpzb-layout-type__icon">{ option.icon }</span>
+												<span className="wpzb-layout-type__label">{ option.label }</span>
+												{ isLocked && showEccentricTooltip && (
 													<Popover
 														className="wpzoom-preview-tooltip"
 														position="top left"
@@ -521,12 +544,11 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 														/>
 													</Popover>
 												) }
-											</div>
-										)
-									} ] : [] )
-								] }
-								selected={ layout }
-							/>
+											</button>
+										);
+									} ) }
+								</div>
+							</BaseControl>
 						</div>
 
 						{ layout == 'eccentric' &&
@@ -615,6 +637,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 						}
 						{ showThumbnail && layout !== 'masonry' &&
 							<SelectControl
+								__next40pxDefaultSize
 								label={ __( 'Thumbnail Size', 'wpzoom-portfolio' ) }
 								value={ thumbnailSize }
 								options={ imageSizes }
@@ -666,6 +689,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							}
 							{ entireItemClickable && lightbox && ( 'grid' === layout || 'masonry' === layout ) &&
 								<SelectControl
+									__next40pxDefaultSize
 									label={ __( 'On Item Click', 'wpzoom-portfolio' ) }
 									value={ entireItemAction }
 									options={ [
@@ -957,7 +981,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								render={ ( { open } ) => (
 									<ToolbarButton
 										icon="edit"
-										label={ __( 'Edit images', 'wpzoom-portfolio' ) }
+										label={ __( 'Edit gallery', 'wpzoom-portfolio' ) }
 										onClick={ open }
 									/>
 								) }
