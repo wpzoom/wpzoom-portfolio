@@ -490,7 +490,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 									{ value: 'list',    label: __( 'Columns', 'wpzoom-portfolio' ) },
 									{ value: 'grid',    label: __( 'Overlay', 'wpzoom-portfolio' ) },
 									{ value: 'masonry', label: __( 'Masonry', 'wpzoom-portfolio' ) },
-									{
+									...( 'media' !== source ? [ {
 										value: 'eccentric',
 										label: (
 											<div
@@ -523,7 +523,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 												) }
 											</div>
 										)
-									}
+									} ] : [] )
 								] }
 								selected={ layout }
 							/>
@@ -579,6 +579,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							/>
 						}
 
+						{ 'media' !== source && ( <>
 						<ToggleControl
 							label={ __( 'Show View All Button', 'wpzoom-portfolio' ) }
 							checked={ showViewAll }
@@ -601,9 +602,11 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								onChange={ ( value ) => setAttributes( { viewAllLink: value } ) }
 							/>
 						}
+						</> ) }
 					</PanelBody>
+					{ 'media' !== source && (
 					<PanelBody icon={ fieldsIcon } title={ __( 'Fields', 'wpzoom-portfolio' ) } initialOpen={ sectionOpen } className="wpzb-settings-panel">
-						{ layout !== 'masonry' && 'media' !== source &&
+						{ layout !== 'masonry' &&
 							<ToggleControl
 								label={ __( 'Show Thumbnail', 'wpzoom-portfolio' ) }
 								checked={ showThumbnail }
@@ -630,14 +633,15 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							checked={ hideTitleOnHover }
 							onChange={ ( value ) => setAttributes( { hideTitleOnHover: value } ) }
 						/> }
-						{ isPro && 'media' !== source && ( layout == 'grid' || layout == 'masonry' ) && <ToggleControl
+						{ isPro && ( layout == 'grid' || layout == 'masonry' ) && <ToggleControl
 							label={ __( 'Always Play Video Background', 'wpzoom-portfolio' ) }
 							help={ __( 'Autoplay the hover-video on every item right away, instead of waiting for the visitor to hover. Mirrors the Inspiro theme’s portfolio behaviour. Requires items configured with a background video.', 'wpzoom-portfolio' ) }
 							checked={ alwaysPlayBackgroundVideo }
 							onChange={ ( value ) => setAttributes( { alwaysPlayBackgroundVideo: value } ) }
 						/> }
-						{ 'media' !== source && fields }
+						{ fields }
 					</PanelBody>
+					) }
 					{ 'eccentric' !== layout &&
 						<PanelBody icon={ settingsIcon } title={ __( 'Other Settings', 'wpzoom-portfolio' ) } initialOpen={ sectionOpen } className="wpzb-settings-panel">
 							<ToggleControl
