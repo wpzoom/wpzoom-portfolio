@@ -19,6 +19,7 @@
 		"last 2 versions"
 	],
 	"dependencies": {
+		"@wordpress/icons": "^14.0.1",
 		"react-select": "1.2.1"
 	},
 	"devDependencies": {
