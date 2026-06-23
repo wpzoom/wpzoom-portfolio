@@ -295,7 +295,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 			value: 'post'
 		},
 		{
-			label: __( 'Images (Media Library)', 'wpzoom-portfolio' ),
+			label: __( 'Media', 'wpzoom-portfolio' ),
 			value: 'media'
 		}
 	];
@@ -386,6 +386,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 												variant="secondary"
 												onClick={ open }
 												className="wpz-portfolio-media-control__button"
+												__next40pxDefaultSize
 											>
 												{ images.length > 0
 													? __( 'Edit Gallery', 'wpzoom-portfolio' )
