@@ -543,7 +543,10 @@ class WPZOOM_Blocks_Portfolio {
 		// Build the View All button, if enabled
 		$view_all_label = isset( $attr[ 'viewAllLabel' ] ) && ! empty( $attr[ 'viewAllLabel' ] ) ? $attr[ 'viewAllLabel' ] : esc_html__( 'View All', 'wpzoom-portfolio' );
 		$view_all_link = esc_url( ! empty( $attr[ 'viewAllLink' ] ) ? $attr[ 'viewAllLink' ] : site_url( '/portfolio/' ) );
-		$show_view_all = isset( $attr[ 'showViewAll' ] ) ? $attr[ 'showViewAll' ] : true;
+		// Static images have no archive to link to, so never show "View All"
+		// for the media source — even if it was enabled under a posts source
+		// before switching.
+		$show_view_all = ( isset( $attr[ 'showViewAll' ] ) ? $attr[ 'showViewAll' ] : true ) && 'media' !== $source;
 		$view_all = $show_view_all ? '<div class="' . $class . '_view-all">
 			<a href="' . $view_all_link . '" title="' . esc_attr( $view_all_label ) . '" class="wpz-portfolio-button__link">' . $view_all_label . '</a>
 		</div>' : '';
