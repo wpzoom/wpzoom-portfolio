@@ -311,6 +311,13 @@ class WPZOOM_Blocks_Portfolio {
 			'type'    => 'string',
 			'default' => 'link'
 		],
+		// Static images used when the "Portfolio Items Source" is set to "media".
+		// Each item: { id, url, fullUrl, alt, caption }.
+		'mediaImages' => [
+			'type'    => 'array',
+			'default' => [],
+			'items'   => [ 'type' => 'object' ]
+		],
 	];
 
 	/**
@@ -548,26 +555,40 @@ class WPZOOM_Blocks_Portfolio {
 		$classes = "$class$class_css_unique$lightbox$align$layout_class$columns$post_type_class$extra_class$category_class$ajax_load_class$dark_mode_class$entire_item_clickable_class";
 
 		// Try to get portfolio items
-		$items_html = $this->items_html( array(
-			'categories'            => $categories,
-			'class'                 => 'wpzoom-blocks_portfolio-block',
-			'layout'                => $layout,
-			'lightbox'              => $use_lightbox,
-			'lightbox_caption'      => $lightbox_caption,
-			'order'                 => $order,
-			'order_by'              => $order_by,
-			'per_page'              => $per_page,
-			'read_more_label'       => $read_more_label,
-			'show_author'           => $show_author,
-			'show_background_video' => $show_video,
-			'show_date'             => $show_date,
-			'show_excerpt'          => $show_excerpt,
-			'show_read_more'        => $show_read_more,
-			'show_title'            => $show_title,
-			'show_thumbnail'        => $show_thumbnail,
-			'source'                => $source,
-			'thumbnail_size'        => $thumbnail_size
-		) );
+		if ( 'media' === $source ) {
+			// Static images chosen from the Media Library instead of a posts query.
+			$items_html = $this->media_items_html( array(
+				'images'           => isset( $attr['mediaImages'] ) && is_array( $attr['mediaImages'] ) ? $attr['mediaImages'] : array(),
+				'class'            => 'wpzoom-blocks_portfolio-block',
+				'layout'           => $layout,
+				'lightbox'         => $use_lightbox,
+				'lightbox_caption' => $lightbox_caption,
+				'show_title'       => $show_title,
+				'show_thumbnail'   => $show_thumbnail,
+				'thumbnail_size'   => $thumbnail_size
+			) );
+		} else {
+			$items_html = $this->items_html( array(
+				'categories'            => $categories,
+				'class'                 => 'wpzoom-blocks_portfolio-block',
+				'layout'                => $layout,
+				'lightbox'              => $use_lightbox,
+				'lightbox_caption'      => $lightbox_caption,
+				'order'                 => $order,
+				'order_by'              => $order_by,
+				'per_page'              => $per_page,
+				'read_more_label'       => $read_more_label,
+				'show_author'           => $show_author,
+				'show_background_video' => $show_video,
+				'show_date'             => $show_date,
+				'show_excerpt'          => $show_excerpt,
+				'show_read_more'        => $show_read_more,
+				'show_title'            => $show_title,
+				'show_thumbnail'        => $show_thumbnail,
+				'source'                => $source,
+				'thumbnail_size'        => $thumbnail_size
+			) );
+		}
 
 		// Show more button
 		$show_more = $this->result_pages > 1 ? '<div class="' . $class . '_show-more">
@@ -1178,6 +1199,150 @@ class WPZOOM_Blocks_Portfolio {
 		$this->posts_ids = $posts_ids;
 
 		// Return the final HTML string
+		return $output;
+	}
+
+	/**
+	 * Returns the HTML string for a set of static images chosen from the Media
+	 * Library (the "media" Portfolio Items Source).
+	 *
+	 * Deliberately emits the SAME item markup as items_html() so the existing
+	 * front-end JS (magnific-popup lightbox gallery, masonry, fade-in) and the
+	 * existing item/overlay/masonry CSS apply with no extra code.
+	 *
+	 * @access public
+	 * @param  array  $args The arguments used to modify the output.
+	 * @return string
+	 * @since  1.4.28
+	 */
+	public function media_items_html( $args = null ) {
+		// Setup some default values
+		$defaults = array(
+			'images'           => array(),
+			'class'            => 'wpzoom-blocks_portfolio-block',
+			'layout'           => 'grid',
+			'lightbox'         => true,
+			'lightbox_caption' => false,
+			'show_title'       => false,
+			'show_thumbnail'   => true,
+			'thumbnail_size'   => 'large',
+		);
+
+		$args = wp_parse_args( $args, $defaults );
+
+		// Static images form a single "page" — there is no posts query, so no
+		// AJAX category loading and no Load More. Resetting these mirrors what
+		// items_html() caches off WP_Query and keeps the render()/JS plumbing
+		// from showing a Load More button.
+		$images             = is_array( $args['images'] ) ? $args['images'] : array();
+		$this->result_pages = 1;
+		$this->all_posts    = count( $images );
+		$this->posts_ids    = array();
+
+		if ( empty( $images ) ) {
+			return '';
+		}
+
+		// Restrict the class to CSS-class-safe characters (same guard as items_html()).
+		$class = isset( $args['class'] ) && is_string( $args['class'] ) && preg_match( '/^[A-Za-z0-9_\-]+$/', $args['class'] )
+			? $args['class']
+			: $defaults['class'];
+
+		$thumb_size = ! empty( $args['thumbnail_size'] ) ? $args['thumbnail_size'] : 'large';
+		if ( 'masonry' === $args['layout'] ) {
+			$thumb_size = 'portfolio_item-masonry';
+		}
+
+		$use_lightbox     = ! empty( $args['lightbox'] );
+		$lightbox_caption = ! empty( $args['lightbox_caption'] );
+		$show_title       = ! empty( $args['show_title'] );
+
+		// The expand/lightbox corner icon — identical to the one items_html() uses.
+		$lightbox_icon = "<svg enable-background='new 0 0 32 32' id='Layer_4' version='1.1' viewBox='0 0 32 32' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
+			<g>
+				<rect fill='none' height='30' stroke='#fff' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2' transform='matrix(6.123234e-17 -1 1 6.123234e-17 0 32)' width='30' x='1' y='1'/>
+					<line fill='none' stroke='#fff' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2' x1='27' x2='5' y1='5' y2='27'/><polyline fill='none' points='16,27 5,27 5,16' stroke='#fff' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2'/>
+					<polyline fill='none' points='16,5 27,5 27,16' stroke='#fff' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2'/>
+			</g>
+		</svg>";
+
+		$output = '';
+
+		foreach ( $images as $index => $img ) {
+			if ( ! is_array( $img ) ) {
+				continue;
+			}
+
+			$att_id  = isset( $img['id'] ) ? intval( $img['id'] ) : 0;
+			$alt     = isset( $img['alt'] ) ? sanitize_text_field( $img['alt'] ) : '';
+			$caption = isset( $img['caption'] ) ? (string) $img['caption'] : '';
+			if ( '' === trim( $caption ) ) {
+				$caption = $alt;
+			}
+
+			// Resolve the thumbnail markup and the full-size URL. Prefer the
+			// attachment (gives srcset/sizes); fall back to the stored URL for
+			// external images added by URL in the placeholder.
+			$thumbnail = '';
+			$full      = '';
+			if ( $att_id > 0 ) {
+				$thumbnail = wp_get_attachment_image( $att_id, $thumb_size, false, array( 'alt' => $alt ) );
+				$full      = wp_get_attachment_image_url( $att_id, 'full' );
+			}
+			if ( empty( $thumbnail ) ) {
+				$src = isset( $img['url'] ) ? $img['url'] : ( isset( $img['fullUrl'] ) ? $img['fullUrl'] : '' );
+				if ( empty( $src ) ) {
+					continue;
+				}
+				$thumbnail = '<img src="' . esc_url( $src ) . '" alt="' . esc_attr( $alt ) . '" loading="lazy" />';
+			}
+			if ( empty( $full ) ) {
+				$full = isset( $img['fullUrl'] ) ? $img['fullUrl'] : ( isset( $img['url'] ) ? $img['url'] : '' );
+			}
+
+			$full         = esc_url( $full );
+			$caption_attr = esc_attr( wp_strip_all_tags( $caption ) );
+			$caption_html = wp_kses_post( $caption );
+			$has_caption  = '' !== trim( wp_strip_all_tags( $caption ) );
+			$item_id      = $att_id > 0 ? $att_id : ( $index + 1 );
+
+			$output .= "<li class='{$class}_item {$class}_item-{$item_id} has-cover' data-category='all'>";
+			$output .= "<article class='{$class}_item-wrap portfolio_item'>";
+			$output .= "<div class='{$class}_item-thumbnail'>";
+
+			// The image links to its full-size file; the corner lightbox icon
+			// (rendered into the popover, mirroring items_html()) opens the
+			// magnific gallery. This keeps the existing hover/overlay CSS and
+			// the JS lightbox binding working unchanged.
+			$output .= "<div class='{$class}_item-media'>";
+			$output .= "<a href='{$full}' title='{$caption_attr}'>{$thumbnail}</a>";
+			$output .= '</div>';
+
+			if ( $use_lightbox ) {
+				$output .= '<div class="portfolio-block-entry-thumbnail-popover-content" data-show-caption="' . ( $lightbox_caption ? '1' : '' ) . '">';
+				$output .= '<a class="mfp-image portfolio-block-popup-video popup_image_icon" href="' . $full . '" aria-label="' . $caption_attr . '">';
+				$output .= "<span class='{$class}_lightbox_icon'>" . $lightbox_icon . '</span>';
+				$output .= '</a>';
+				$output .= '<span class="portfolio_item-title" style="display: none;"><a href="' . $full . '">' . ( $has_caption ? $caption_html : esc_html( $alt ) ) . '</a></span>';
+				$output .= '</div>';
+			}
+
+			$output .= '</div>'; // _item-thumbnail
+
+			// Details panel: provides the overlay/hover tint (grid/masonry) and,
+			// when enabled, the caption heading.
+			$output .= $show_title ? "<div class='{$class}_item-details show-title'>" : "<div class='{$class}_item-details'>";
+			if ( $show_title && $has_caption ) {
+				$output .= "<h3 class='{$class}_item-title'><a href='{$full}'>{$caption_html}</a></h3>";
+			}
+			$output .= '</div>';
+
+			$output .= '</article>';
+			$output .= '</li>';
+
+			$this->posts_ids[] = $item_id;
+		}
+
 		return $output;
 	}
 

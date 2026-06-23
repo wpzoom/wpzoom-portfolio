@@ -1,8 +1,12 @@
 import apiFetch from '@wordpress/api-fetch';
 import {
 	InspectorControls,
+	BlockControls,
 	PanelColorSettings,
 	AlignmentControl,
+	MediaPlaceholder,
+	MediaUpload,
+	MediaUploadCheck,
 	useBlockProps
 } from '@wordpress/block-editor';
 import { registerBlockType } from '@wordpress/blocks';
@@ -23,11 +27,13 @@ import {
 	TreeSelect,
 	ColorPalette,
 	Tooltip,
-	Popover
+	Popover,
+	ToolbarGroup,
+	ToolbarButton
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
-const { __ } = wp.i18n;
+const { __, _n, sprintf } = wp.i18n;
 import { groupBy } from 'lodash';
 import ServerSideRender from '@wordpress/server-side-render';
 
@@ -170,7 +176,33 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 			lightboxCaption, order, orderBy, readMoreLabel, showAuthor, showCategoryFilter, enableAjaxLoading, showDate,
 			showExcerpt, showReadMore, showThumbnail, showViewAll, source, thumbnailSize, viewAllLabel, viewAllLink, primaryColor, secondaryColor, filterActiveColor, filterAlignment, filterFontSize, filterFontFamily, filterTextTransform, filterLetterSpacing, filterFontWeight, postTitleFontSize, postTitleFontSizeMobile,
 			postTitleTextTransform, postTitleLetterSpacing, postTitleFontFamily, postTitleFontWeight, postTitleLineHeight, postTitleColor, postHoverTitleColor, btnTextColor, btnHoverTextColor, btnBgColor, btnHoverBgColor, btnFontFamily, btnFontSize, btnTextTransform, btnLetterSpacing, btnBorder, btnBorderStyle, btnBorderWidth,
-			btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction } = attributes;
+			btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction, mediaImages } = attributes;
+
+	// Static images selected for the "media" Portfolio Items Source.
+	const images = Array.isArray( mediaImages ) ? mediaImages : [];
+
+	// Normalize a Media Library object into the lean shape stored in the
+	// mediaImages attribute and consumed by the PHP renderer.
+	const mapMedia = ( media ) => {
+		const sized = media.sizes && ( media.sizes.large || media.sizes.full );
+		const fullSize = media.sizes && media.sizes.full;
+		return {
+			id: media.id,
+			url: sized ? sized.url : media.url,
+			fullUrl: fullSize ? fullSize.url : media.url,
+			alt: media.alt || '',
+			caption: 'string' === typeof media.caption ? media.caption : ( media.caption && media.caption.raw ? media.caption.raw : '' ),
+		};
+	};
+
+	const onSelectImages = ( selection ) => {
+		const list = Array.isArray( selection ) ? selection : [ selection ];
+		setAttributes( { mediaImages: list.filter( Boolean ).map( mapMedia ) } );
+	};
+
+	const removeImage = ( index ) => {
+		setAttributes( { mediaImages: images.filter( ( _, i ) => i !== index ) } );
+	};
 
 	const post_type = wp.data.select( 'core/editor' ).getCurrentPostType();
 	const post_id   = wp.data.select( 'core/editor' ).getCurrentPost().id;
@@ -258,6 +290,10 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 		{
 			label: __( 'Blog Posts', 'wpzoom-portfolio' ),
 			value: 'post'
+		},
+		{
+			label: __( 'Images (Media Library)', 'wpzoom-portfolio' ),
+			value: 'media'
 		}
 	];
 
@@ -304,6 +340,60 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							options={ customPosts }
 							onChange={ ( value ) => setAttributes( { source: value, categories: [] } ) }
 						/>
+
+						{ 'media' === source && (
+							<div className="wpz-portfolio-media-control">
+								<MediaUploadCheck>
+									<MediaUpload
+										gallery
+										multiple
+										addToGallery
+										allowedTypes={ [ 'image' ] }
+										value={ images.map( ( img ) => img.id ).filter( Boolean ) }
+										onSelect={ onSelectImages }
+										render={ ( { open } ) => (
+											<Button
+												variant="secondary"
+												onClick={ open }
+												className="wpz-portfolio-media-control__button"
+											>
+												{ images.length > 0
+													? __( 'Edit Images', 'wpzoom-portfolio' )
+													: __( 'Add Images', 'wpzoom-portfolio' ) }
+											</Button>
+										) }
+									/>
+								</MediaUploadCheck>
+								{ images.length > 0 && (
+									<>
+										<ul className="wpz-portfolio-media-control__grid">
+											{ images.map( ( img, index ) => (
+												<li key={ img.id || index } className="wpz-portfolio-media-control__item">
+													<img src={ img.url } alt={ img.alt || '' } />
+													<button
+														type="button"
+														className="wpz-portfolio-media-control__remove"
+														aria-label={ __( 'Remove image', 'wpzoom-portfolio' ) }
+														onClick={ () => removeImage( index ) }
+													>
+														&times;
+													</button>
+												</li>
+											) ) }
+										</ul>
+										<p className="wpz-portfolio-media-control__help">
+											{ sprintf(
+												/* translators: %d: number of selected images. */
+												_n( '%d image selected.', '%d images selected.', images.length, 'wpzoom-portfolio' ),
+												images.length
+											) }
+										</p>
+									</>
+								) }
+							</div>
+						) }
+
+						{ 'media' !== source && ( <>
 
 						<SelectControl
 							label={ __( 'Order By', 'wpzoom-portfolio' ) }
@@ -387,6 +477,8 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							onChange={ ( value ) => setAttributes( { enableAjaxLoading: value } ) }
 						/>
 						}
+
+						</> ) }
 					</PanelBody>
 					<PanelBody icon={ layoutIcon } title={ __( 'Layout', 'wpzoom-portfolio' ) } initialOpen={ sectionOpen } className="wpzb-settings-panel">
 						<div className="wpzb-layout-options">
@@ -511,7 +603,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 						}
 					</PanelBody>
 					<PanelBody icon={ fieldsIcon } title={ __( 'Fields', 'wpzoom-portfolio' ) } initialOpen={ sectionOpen } className="wpzb-settings-panel">
-						{ layout !== 'masonry' &&
+						{ layout !== 'masonry' && 'media' !== source &&
 							<ToggleControl
 								label={ __( 'Show Thumbnail', 'wpzoom-portfolio' ) }
 								checked={ showThumbnail }
@@ -538,13 +630,13 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							checked={ hideTitleOnHover }
 							onChange={ ( value ) => setAttributes( { hideTitleOnHover: value } ) }
 						/> }
-						{ isPro && ( layout == 'grid' || layout == 'masonry' ) && <ToggleControl
+						{ isPro && 'media' !== source && ( layout == 'grid' || layout == 'masonry' ) && <ToggleControl
 							label={ __( 'Always Play Video Background', 'wpzoom-portfolio' ) }
 							help={ __( 'Autoplay the hover-video on every item right away, instead of waiting for the visitor to hover. Mirrors the Inspiro theme’s portfolio behaviour. Requires items configured with a background video.', 'wpzoom-portfolio' ) }
 							checked={ alwaysPlayBackgroundVideo }
 							onChange={ ( value ) => setAttributes( { alwaysPlayBackgroundVideo: value } ) }
 						/> }
-						{ fields }
+						{ 'media' !== source && fields }
 					</PanelBody>
 					{ 'eccentric' !== layout &&
 						<PanelBody icon={ settingsIcon } title={ __( 'Other Settings', 'wpzoom-portfolio' ) } initialOpen={ sectionOpen } className="wpzb-settings-panel">
@@ -847,8 +939,45 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 					}
 				</PanelBody>
 			</InspectorControls>
+			{ 'media' === source && images.length > 0 && (
+				<BlockControls>
+					<ToolbarGroup>
+						<MediaUploadCheck>
+							<MediaUpload
+								gallery
+								multiple
+								addToGallery
+								allowedTypes={ [ 'image' ] }
+								value={ images.map( ( img ) => img.id ).filter( Boolean ) }
+								onSelect={ onSelectImages }
+								render={ ( { open } ) => (
+									<ToolbarButton
+										icon="edit"
+										label={ __( 'Edit images', 'wpzoom-portfolio' ) }
+										onClick={ open }
+									/>
+								) }
+							/>
+						</MediaUploadCheck>
+					</ToolbarGroup>
+				</BlockControls>
+			) }
 			<div { ...blockProps }>
-				<ServerSideRender block="wpzoom-blocks/portfolio" attributes={ attributes } />
+				{ 'media' === source && images.length === 0 ? (
+					<MediaPlaceholder
+						icon="format-gallery"
+						labels={ {
+							title: __( 'Portfolio', 'wpzoom-portfolio' ),
+							instructions: __( 'Drag images, upload new ones or select files from your library to display them in the portfolio.', 'wpzoom-portfolio' ),
+						} }
+						onSelect={ onSelectImages }
+						accept="image/*"
+						allowedTypes={ [ 'image' ] }
+						multiple
+					/>
+				) : (
+					<ServerSideRender block="wpzoom-blocks/portfolio" attributes={ attributes } />
+				) }
 			</div>
 		</>
 	);
