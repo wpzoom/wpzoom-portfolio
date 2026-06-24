@@ -303,6 +303,12 @@ class WPZOOM_Blocks_Portfolio {
 			'type'    => 'boolean',
 			'default' => false
 		],
+		// "media" source only: when "Show Title" is on, reveal the title only
+		// on hover (grid/masonry) instead of keeping it permanently visible.
+		'showTitleOnHover' => [
+			'type'    => 'boolean',
+			'default' => false
+		],
 		'entireItemClickable' => [
 			'type'    => 'boolean',
 			'default' => false
@@ -573,6 +579,7 @@ class WPZOOM_Blocks_Portfolio {
 				'lightbox'         => $use_lightbox,
 				'lightbox_caption' => $lightbox_caption,
 				'show_title'       => $show_title,
+				'title_on_hover'   => isset( $attr['showTitleOnHover'] ) ? boolval( $attr['showTitleOnHover'] ) : false,
 				'show_thumbnail'   => $show_thumbnail,
 				'thumbnail_size'   => $thumbnail_size
 			) );
@@ -1233,6 +1240,7 @@ class WPZOOM_Blocks_Portfolio {
 			'lightbox'         => true,
 			'lightbox_caption' => false,
 			'show_title'       => false,
+			'title_on_hover'   => false,
 			'show_thumbnail'   => true,
 			'thumbnail_size'   => 'large',
 		);
@@ -1265,6 +1273,7 @@ class WPZOOM_Blocks_Portfolio {
 		$use_lightbox     = ! empty( $args['lightbox'] );
 		$lightbox_caption = ! empty( $args['lightbox_caption'] );
 		$show_title       = ! empty( $args['show_title'] );
+		$title_on_hover   = ! empty( $args['title_on_hover'] );
 
 		// The expand/lightbox corner icon — identical to the one items_html() uses.
 		$lightbox_icon = "<svg enable-background='new 0 0 32 32' id='Layer_4' version='1.1' viewBox='0 0 32 32' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
@@ -1353,12 +1362,14 @@ class WPZOOM_Blocks_Portfolio {
 
 			$output .= '</div>'; // _item-thumbnail
 
-			// Details panel: provides the overlay/hover tint (grid/masonry) and
-			// the title heading. Mirroring the posts template, the heading is
-			// always rendered — the `show-title` class + the grid/masonry overlay
-			// CSS decide whether it is always visible or revealed only on hover.
-			$output .= $show_title ? "<div class='{$class}_item-details show-title'>" : "<div class='{$class}_item-details'>";
-			if ( $has_title ) {
+			// Details panel: the overlay is always rendered (it provides the
+			// grid/masonry hover tint). The title heading inside it is rendered
+			// only when "Show Title" is on; the show-title class keeps the title
+			// permanently visible, while "Show Title on Hover" drops that class so
+			// the title reveals only on hover. "Show Title" off renders no heading.
+			$details_class = ( $show_title && ! $title_on_hover ) ? "{$class}_item-details show-title" : "{$class}_item-details";
+			$output .= "<div class='{$details_class}'>";
+			if ( $show_title && $has_title ) {
 				$output .= "<h3 class='{$class}_item-title'><a href='{$full}'>{$title_html}</a></h3>";
 			}
 			$output .= '</div>';

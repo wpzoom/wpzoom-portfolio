@@ -179,7 +179,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 			lightboxCaption, order, orderBy, readMoreLabel, showAuthor, showCategoryFilter, enableAjaxLoading, showDate,
 			showExcerpt, showReadMore, showThumbnail, showViewAll, source, thumbnailSize, viewAllLabel, viewAllLink, primaryColor, secondaryColor, filterActiveColor, filterAlignment, filterFontSize, filterFontFamily, filterTextTransform, filterLetterSpacing, filterFontWeight, postTitleFontSize, postTitleFontSizeMobile,
 			postTitleTextTransform, postTitleLetterSpacing, postTitleFontFamily, postTitleFontWeight, postTitleLineHeight, postTitleColor, postHoverTitleColor, btnTextColor, btnHoverTextColor, btnBgColor, btnHoverBgColor, btnFontFamily, btnFontSize, btnTextTransform, btnLetterSpacing, btnBorder, btnBorderStyle, btnBorderWidth,
-			btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction, mediaImages } = attributes;
+			btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, showTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction, mediaImages } = attributes;
 
 	// Static images selected for the "media" Portfolio Items Source.
 	const images = Array.isArray( mediaImages ) ? mediaImages : [];
@@ -677,15 +677,15 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 					<PanelBody icon={ fieldsIcon } title={ __( 'Fields', 'wpzoom-portfolio' ) } initialOpen={ sectionOpen } className="wpzb-settings-panel">
 						<ToggleControl
 							label={ __( 'Show Title', 'wpzoom-portfolio' ) }
-							help={ __( 'Always display each image’s title. When off, it appears only on hover.', 'wpzoom-portfolio' ) }
+							help={ __( 'Display each image’s title. Turn off to hide the title completely.', 'wpzoom-portfolio' ) }
 							checked={ showTitle }
 							onChange={ ( value ) => setAttributes( { showTitle: value } ) }
 						/>
 						{ showTitle && <ToggleControl
-							label={ __( 'Hide Title on Hover', 'wpzoom-portfolio' ) }
-							help={ __( 'Reveal the clean image by fading the title overlay out on hover.', 'wpzoom-portfolio' ) }
-							checked={ hideTitleOnHover }
-							onChange={ ( value ) => setAttributes( { hideTitleOnHover: value } ) }
+							label={ __( 'Show Title on Hover', 'wpzoom-portfolio' ) }
+							help={ __( 'Reveal the title only when hovering an item, instead of keeping it always visible.', 'wpzoom-portfolio' ) }
+							checked={ showTitleOnHover }
+							onChange={ ( value ) => setAttributes( { showTitleOnHover: value } ) }
 						/> }
 					</PanelBody>
 					) }
