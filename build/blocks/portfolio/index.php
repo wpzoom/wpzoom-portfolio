@@ -518,6 +518,12 @@ class WPZOOM_Blocks_Portfolio {
 		$dark_mode_class = $eccentric_dark_mode ? ' dark-mode' : '';
 		$entire_item_clickable = isset( $attr['entireItemClickable'] ) ? boolval( $attr['entireItemClickable'] ) : false;
 		$entire_item_action = isset( $attr['entireItemAction'] ) ? $attr['entireItemAction'] : 'link';
+		// Static images have no single-item page to link to, so the only
+		// meaningful "entire item" action for the media source is the
+		// lightbox — force it regardless of the stored value.
+		if ( 'media' === $source ) {
+			$entire_item_action = 'lightbox';
+		}
 		// The lightbox action only makes sense when the lightbox itself is on;
 		// otherwise there is no trigger, so fall back to the default link.
 		$entire_item_lightbox_enabled = isset( $attr['lightbox'] ) ? boolval( $attr['lightbox'] ) : true;

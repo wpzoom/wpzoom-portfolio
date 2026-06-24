@@ -694,7 +694,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 									onChange={ ( value ) => setAttributes( { entireItemClickable: value } ) }
 								/>
 							}
-							{ entireItemClickable && lightbox && ( 'grid' === layout || 'masonry' === layout ) &&
+							{ entireItemClickable && lightbox && 'media' !== source && ( 'grid' === layout || 'masonry' === layout ) &&
 								<SelectControl
 									__next40pxDefaultSize
 									label={ __( 'On Item Click', 'wpzoom-portfolio' ) }
