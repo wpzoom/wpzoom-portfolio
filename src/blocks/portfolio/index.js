@@ -194,6 +194,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 			url: sized ? sized.url : media.url,
 			fullUrl: fullSize ? fullSize.url : media.url,
 			alt: media.alt || '',
+			title: 'string' === typeof media.title ? media.title : ( media.title && media.title.raw ? media.title.raw : '' ),
 			caption: 'string' === typeof media.caption ? media.caption : ( media.caption && media.caption.raw ? media.caption.raw : '' ),
 		};
 	};
@@ -670,6 +671,22 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							onChange={ ( value ) => setAttributes( { alwaysPlayBackgroundVideo: value } ) }
 						/> }
 						{ fields }
+					</PanelBody>
+					) }
+					{ 'media' === source && ( layout == 'grid' || layout == 'masonry' ) && (
+					<PanelBody icon={ fieldsIcon } title={ __( 'Fields', 'wpzoom-portfolio' ) } initialOpen={ sectionOpen } className="wpzb-settings-panel">
+						<ToggleControl
+							label={ __( 'Show Title', 'wpzoom-portfolio' ) }
+							help={ __( 'Always display each image’s title. When off, it appears only on hover.', 'wpzoom-portfolio' ) }
+							checked={ showTitle }
+							onChange={ ( value ) => setAttributes( { showTitle: value } ) }
+						/>
+						{ showTitle && <ToggleControl
+							label={ __( 'Hide Title on Hover', 'wpzoom-portfolio' ) }
+							help={ __( 'Reveal the clean image by fading the title overlay out on hover.', 'wpzoom-portfolio' ) }
+							checked={ hideTitleOnHover }
+							onChange={ ( value ) => setAttributes( { hideTitleOnHover: value } ) }
+						/> }
 					</PanelBody>
 					) }
 					{ 'eccentric' !== layout &&

@@ -312,7 +312,7 @@ class WPZOOM_Blocks_Portfolio {
 			'default' => 'link'
 		],
 		// Static images used when the "Portfolio Items Source" is set to "media".
-		// Each item: { id, url, fullUrl, alt, caption }.
+		// Each item: { id, url, fullUrl, alt, title, caption }.
 		'mediaImages' => [
 			'type'    => 'array',
 			'default' => [],
@@ -1289,6 +1289,19 @@ class WPZOOM_Blocks_Portfolio {
 				$caption = $alt;
 			}
 
+			// The on-item overlay heading uses the image's own title (the
+			// attachment post title), mirroring how post titles display for the
+			// posts source. Fall back to the live attachment title (for galleries
+			// saved before titles were captured), then the caption/alt so the
+			// heading is never empty when "Show Title" is enabled.
+			$title = isset( $img['title'] ) ? (string) $img['title'] : '';
+			if ( '' === trim( $title ) && $att_id > 0 ) {
+				$title = get_the_title( $att_id );
+			}
+			if ( '' === trim( $title ) ) {
+				$title = $caption;
+			}
+
 			// Resolve the thumbnail markup and the full-size URL. Prefer the
 			// attachment (gives srcset/sizes); fall back to the stored URL for
 			// external images added by URL in the placeholder.
@@ -1313,6 +1326,8 @@ class WPZOOM_Blocks_Portfolio {
 			$caption_attr = esc_attr( wp_strip_all_tags( $caption ) );
 			$caption_html = wp_kses_post( $caption );
 			$has_caption  = '' !== trim( wp_strip_all_tags( $caption ) );
+			$title_html   = wp_kses_post( $title );
+			$has_title    = '' !== trim( wp_strip_all_tags( $title ) );
 			$item_id      = $att_id > 0 ? $att_id : ( $index + 1 );
 
 			$output .= "<li class='{$class}_item {$class}_item-{$item_id} has-cover' data-category='all'>";
@@ -1338,11 +1353,13 @@ class WPZOOM_Blocks_Portfolio {
 
 			$output .= '</div>'; // _item-thumbnail
 
-			// Details panel: provides the overlay/hover tint (grid/masonry) and,
-			// when enabled, the caption heading.
+			// Details panel: provides the overlay/hover tint (grid/masonry) and
+			// the title heading. Mirroring the posts template, the heading is
+			// always rendered — the `show-title` class + the grid/masonry overlay
+			// CSS decide whether it is always visible or revealed only on hover.
 			$output .= $show_title ? "<div class='{$class}_item-details show-title'>" : "<div class='{$class}_item-details'>";
-			if ( $show_title && $has_caption ) {
-				$output .= "<h3 class='{$class}_item-title'><a href='{$full}'>{$caption_html}</a></h3>";
+			if ( $has_title ) {
+				$output .= "<h3 class='{$class}_item-title'><a href='{$full}'>{$title_html}</a></h3>";
 			}
 			$output .= '</div>';
 
