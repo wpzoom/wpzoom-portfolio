@@ -363,10 +363,10 @@
         }
     }
 
-    &__remove {
+    &__remove,
+    &__edit {
         position: absolute;
         top: 2px;
-        right: 2px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -382,16 +382,73 @@
         cursor: pointer;
         opacity: 0;
         transition: opacity 0.15s ease;
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.85);
+        }
+    }
+
+    &__remove {
+        right: 2px;
+    }
+
+    &__edit {
+        right: 26px;
     }
 
     &__item:hover &__remove,
-    &__remove:focus {
+    &__item:hover &__edit,
+    &__remove:focus,
+    &__edit:focus {
         opacity: 1;
+    }
+
+    // Persistent badge marking images that open a video in the lightbox.
+    &__video-badge {
+        position: absolute;
+        bottom: 2px;
+        left: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: rgba(11, 180, 170, 0.95);
+        color: #fff;
+        pointer-events: none;
     }
 
     &__help {
         margin-top: 8px !important;
         color: rgba(30, 30, 30, 0.62);
         font-size: 12px;
+    }
+}
+
+.wpz-portfolio-media-modal {
+    max-width: 480px;
+
+    &__preview {
+        margin-bottom: 16px;
+
+        img {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 220px;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+    }
+
+    &__upsell {
+        margin: 0 0 16px;
+    }
+
+    &__actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 16px;
     }
 }

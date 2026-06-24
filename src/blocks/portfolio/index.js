@@ -15,9 +15,13 @@ import {
 	Button,
 	ButtonGroup,
 	Disabled,
+	ExternalLink,
 	HorizontalRule,
+	Modal,
+	Notice,
 	PanelBody,
 	Placeholder,
+	RadioControl,
 	RangeControl,
 	SelectControl,
 	Spinner,
@@ -208,6 +212,82 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 		setAttributes( { mediaImages: images.filter( ( _, i ) => i !== index ) } );
 	};
 
+	// Merge a partial update into a single image, keeping every other image
+	// untouched. Used by the per-image video settings modal below.
+	const updateImage = ( index, patch ) => {
+		setAttributes( {
+			mediaImages: images.map( ( img, i ) => ( i === index ? { ...img, ...patch } : img ) ),
+		} );
+	};
+
+	// An image opens a video (instead of the full-size image) in the lightbox
+	// only when a matching source is configured. Mirrors the Pro renderer.
+	const imageHasVideo = ( img ) => (
+		( 'self_hosted' === img.videoType && img.videoMp4 ) ||
+		( 'external_hosted' === img.videoType && img.videoUrl )
+	);
+
+	// Index of the image whose video settings modal is open ( null = closed ).
+	const [ editingIndex, setEditingIndex ] = useState( null );
+	const editingImage = null !== editingIndex ? images[ editingIndex ] : null;
+
+	// The video source fields shown inside the per-image modal. Extracted so it
+	// can be rendered as-is for Pro and wrapped in <Disabled> (read-only preview)
+	// for the free plugin, where the video lightbox is a Pro-only upsell.
+	const renderVideoControls = () => (
+		<>
+			<RadioControl
+				label={ __( 'Video Lightbox', 'wpzoom-portfolio' ) }
+				help={ __( 'Open a video in the lightbox when this image is clicked, instead of the full-size image.', 'wpzoom-portfolio' ) }
+				selected={ editingImage.videoType || '' }
+				options={ [
+					{ label: __( 'None', 'wpzoom-portfolio' ), value: '' },
+					{ label: __( 'Self-Hosted Video (MP4)', 'wpzoom-portfolio' ), value: 'self_hosted' },
+					{ label: __( 'YouTube / Vimeo', 'wpzoom-portfolio' ), value: 'external_hosted' },
+				] }
+				onChange={ ( value ) => updateImage( editingIndex, { videoType: value } ) }
+			/>
+
+			{ 'self_hosted' === editingImage.videoType && (
+				<>
+					<MediaUploadCheck>
+						<MediaUpload
+							allowedTypes={ [ 'video' ] }
+							value={ editingImage.videoMp4Id }
+							onSelect={ ( media ) => updateImage( editingIndex, { videoMp4: media.url, videoMp4Id: media.id } ) }
+							render={ ( { open } ) => (
+								<Button variant="secondary" onClick={ open } __next40pxDefaultSize>
+									{ editingImage.videoMp4
+										? __( 'Replace Video', 'wpzoom-portfolio' )
+										: __( 'Upload Video', 'wpzoom-portfolio' ) }
+								</Button>
+							) }
+						/>
+					</MediaUploadCheck>
+					<TextControl
+						__next40pxDefaultSize
+						type="url"
+						label={ __( 'MP4 (H.264) Video URL', 'wpzoom-portfolio' ) }
+						value={ editingImage.videoMp4 || '' }
+						onChange={ ( value ) => updateImage( editingIndex, { videoMp4: value } ) }
+						help={ __( 'Link to an .mp4 file. Supported by most browsers and mobile devices.', 'wpzoom-portfolio' ) }
+					/>
+				</>
+			) }
+
+			{ 'external_hosted' === editingImage.videoType && (
+				<TextControl
+					__next40pxDefaultSize
+					type="url"
+					label={ __( 'YouTube or Vimeo URL', 'wpzoom-portfolio' ) }
+					value={ editingImage.videoUrl || '' }
+					onChange={ ( value ) => updateImage( editingIndex, { videoUrl: value } ) }
+					help={ __( 'Paste a YouTube or Vimeo video URL.', 'wpzoom-portfolio' ) }
+				/>
+			) }
+		</>
+	);
+
 	const post_type = wp.data.select( 'core/editor' ).getCurrentPostType();
 	const post_id   = wp.data.select( 'core/editor' ).getCurrentPost().id;
 
@@ -354,6 +434,19 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 											{ images.slice( 0, 9 ).map( ( img, index ) => (
 												<li key={ img.id || index } className="wpz-portfolio-media-control__item">
 													<img src={ img.url } alt={ img.alt || '' } />
+													{ imageHasVideo( img ) && (
+														<span className="wpz-portfolio-media-control__video-badge" aria-hidden="true">
+															<svg width="14" height="14" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6.8 5.7L15 10L6.8 14.3V5.7Z" fill="currentColor" /></svg>
+														</span>
+													) }
+													<button
+														type="button"
+														className="wpz-portfolio-media-control__edit"
+														aria-label={ __( 'Edit image video settings', 'wpzoom-portfolio' ) }
+														onClick={ () => setEditingIndex( index ) }
+													>
+														<svg width="13" height="13" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M12.3 3.7l4 4L6.7 17.3l-4.5 1.2 1.2-4.5L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z" fill="currentColor" /></svg>
+													</button>
 													<button
 														type="button"
 														className="wpz-portfolio-media-control__remove"
@@ -402,6 +495,46 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 										) }
 									/>
 								</MediaUploadCheck>
+
+								{ null !== editingIndex && editingImage && (
+									<Modal
+										title={ __( 'Image Settings', 'wpzoom-portfolio' ) }
+										onRequestClose={ () => setEditingIndex( null ) }
+										className="wpz-portfolio-media-modal"
+									>
+										<div className="wpz-portfolio-media-modal__preview">
+											<img src={ editingImage.fullUrl || editingImage.url } alt={ editingImage.alt || '' } />
+										</div>
+
+										{ ! isPro && (
+											<Notice
+												status="warning"
+												isDismissible={ false }
+												className="wpz-portfolio-media-modal__upsell"
+											>
+												{ __( 'Attaching a video that opens in the lightbox is a PRO feature.', 'wpzoom-portfolio' ) }{ ' ' }
+												<ExternalLink href="https://www.wpzoom.com/plugins/portfolio-pro/?utm_source=wpadmin&utm_medium=portfolio-free&utm_campaign=media-video-lightbox">
+													{ __( 'Upgrade to PRO', 'wpzoom-portfolio' ) }
+												</ExternalLink>
+											</Notice>
+										) }
+
+										{ isPro
+											? renderVideoControls()
+											: <Disabled>{ renderVideoControls() }</Disabled>
+										}
+
+										<div className="wpz-portfolio-media-modal__actions">
+											<Button
+												variant="primary"
+												onClick={ () => setEditingIndex( null ) }
+												__next40pxDefaultSize
+											>
+												{ __( 'Done', 'wpzoom-portfolio' ) }
+											</Button>
+										</div>
+									</Modal>
+								) }
 							</div>
 						) }
 
