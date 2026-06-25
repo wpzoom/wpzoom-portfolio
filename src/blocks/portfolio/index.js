@@ -62,7 +62,9 @@ import {
 	layoutColumnsIcon,
 	layoutOverlayIcon,
 	layoutMasonryIcon,
-	layoutEccentricIcon
+	layoutEccentricIcon,
+	layoutJustifiedIcon,
+	layoutMetroIcon
 } from '../../icons';
 
 /**
@@ -149,7 +151,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 	} );
 
 	const [ imageSizes, setImageSizes ] = useState( [] );
-	const [ showProModal, setShowProModal ] = useState( false );
+	const [ proModalLayout, setProModalLayout ] = useState( null );
 
 	useEffect( () => {
 		let isMounted = true;
@@ -179,10 +181,15 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 			lightboxCaption, order, orderBy, readMoreLabel, showAuthor, showCategoryFilter, enableAjaxLoading, showDate,
 			showExcerpt, showReadMore, showThumbnail, showViewAll, source, thumbnailSize, viewAllLabel, viewAllLink, primaryColor, secondaryColor, filterActiveColor, filterAlignment, filterFontSize, filterFontFamily, filterTextTransform, filterLetterSpacing, filterFontWeight, postTitleFontSize, postTitleFontSizeMobile,
 			postTitleTextTransform, postTitleLetterSpacing, postTitleFontFamily, postTitleFontWeight, postTitleLineHeight, postTitleColor, postHoverTitleColor, btnTextColor, btnHoverTextColor, btnBgColor, btnHoverBgColor, btnFontFamily, btnFontSize, btnTextTransform, btnLetterSpacing, btnBorder, btnBorderStyle, btnBorderWidth,
-			btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, showTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction, mediaImages } = attributes;
+			btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, showTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction, justifiedRowHeight, mediaImages } = attributes;
 
 	// Static images selected for the "media" Portfolio Items Source.
 	const images = Array.isArray( mediaImages ) ? mediaImages : [];
+
+	// Layouts that render the item title as an overlay on top of the thumbnail.
+	const isOverlayLayout = [ 'grid', 'masonry', 'metro', 'justified' ].includes( layout );
+	// Layouts that use the "Amount of Columns" control (column-based grids).
+	const usesColumns = [ 'grid', 'masonry', 'metro' ].includes( layout );
 
 	// Normalize a Media Library object into the lean shape stored in the
 	// mediaImages attribute and consumed by the PHP renderer.
@@ -347,7 +354,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								// The "media" source only supports the Columns, Overlay
 								// and Masonry layouts, so reset any unsupported layout
 								// (e.g. "eccentric") back to a supported default.
-								if ( 'media' === value && ! [ 'list', 'grid', 'masonry' ].includes( layout ) ) {
+								if ( 'media' === value && ! [ 'list', 'grid', 'masonry', 'metro', 'justified' ].includes( layout ) ) {
 									next.layout = 'grid';
 								}
 								setAttributes( next );
@@ -517,6 +524,8 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 										{ value: 'list',      label: __( 'Columns', 'wpzoom-portfolio' ),   icon: layoutColumnsIcon },
 										{ value: 'grid',      label: __( 'Overlay', 'wpzoom-portfolio' ),   icon: layoutOverlayIcon },
 										{ value: 'masonry',   label: __( 'Masonry', 'wpzoom-portfolio' ),   icon: layoutMasonryIcon },
+										{ value: 'justified', label: __( 'Justified', 'wpzoom-portfolio' ), icon: layoutJustifiedIcon, pro: true },
+										{ value: 'metro',     label: __( 'Metro', 'wpzoom-portfolio' ),     icon: layoutMetroIcon, pro: true },
 										...( 'media' !== source ? [ { value: 'eccentric', label: __( 'Eccentric', 'wpzoom-portfolio' ), icon: layoutEccentricIcon, pro: true } ] : [] )
 									].map( ( option ) => {
 										const isSelected = layout === option.value;
@@ -536,7 +545,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 												].filter( Boolean ).join( ' ' ) }
 												onClick={ () => {
 													if ( isLocked ) {
-														setShowProModal( true );
+														setProModalLayout( option );
 													} else {
 														setAttributes( { layout: option.value } );
 													}
@@ -554,24 +563,25 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							</BaseControl>
 						</div>
 
-						{ showProModal && (
+						{ proModalLayout && (
 							<Modal
-								title={ __( 'Unlock the Eccentric Layout', 'wpzoom-portfolio' ) }
-								onRequestClose={ () => setShowProModal( false ) }
+								title={ sprintf( __( 'Unlock the %s Layout', 'wpzoom-portfolio' ), proModalLayout.label ) }
+								onRequestClose={ () => setProModalLayout( null ) }
 								className="wpzb-pro-modal"
 							>
 								<img
-									src={ plugin_url + 'assets/images/eccentric-preview.jpg' }
-									alt={ __( 'Eccentric Layout Preview', 'wpzoom-portfolio' ) }
+									src={ plugin_url + 'assets/images/' + proModalLayout.value + '-preview.jpg' }
+									alt={ sprintf( __( '%s Layout Preview', 'wpzoom-portfolio' ), proModalLayout.label ) }
 									className="wpzb-pro-modal__preview"
+									onError={ ( e ) => { e.target.style.display = 'none'; } }
 								/>
 								<p className="wpzb-pro-modal__description">
-									{ __( 'The Eccentric layout is a PRO feature. Upgrade to WPZOOM Portfolio PRO to unlock it, along with video portfolios, hover effects and more.', 'wpzoom-portfolio' ) }
+									{ __( 'This is a PRO layout. Upgrade to WPZOOM Portfolio PRO to unlock it, along with video portfolios, hover effects and more.', 'wpzoom-portfolio' ) }
 								</p>
 								<div className="wpzb-pro-modal__actions">
 									<Button
 										variant="primary"
-										href="https://www.wpzoom.com/plugins/portfolio-pro/?utm_source=wpadmin&utm_medium=portfolio-free&utm_campaign=eccentric-layout"
+										href="https://www.wpzoom.com/plugins/portfolio-pro/?utm_source=wpadmin&utm_medium=portfolio-free&utm_campaign=layouts"
 										target="_blank"
 										rel="noopener noreferrer"
 										__next40pxDefaultSize
@@ -601,7 +611,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							/>
 						}
 
-						{ ( layout == 'grid' || layout == 'masonry' ) &&
+						{ usesColumns &&
 							<RangeControl
 								label={ __( 'Amount of Columns', 'wpzoom-portfolio' ) }
 								max={ 6 }
@@ -611,7 +621,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							/>
 						}
 
-						{ ( layout == 'grid' || layout == 'masonry' ) &&
+						{ isOverlayLayout &&
 							<RangeControl
 								label={ __( 'Columns Gap', 'wpzoom-portfolio' ) }
 								max={ 100 }
@@ -621,7 +631,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							/>
 						}
 
-						{ ( layout == 'grid' || layout == 'masonry' ) &&
+						{ isOverlayLayout &&
 							<RangeControl
 								label={ __( 'Item Border Radius', 'wpzoom-portfolio' ) }
 								help={ __( 'Rounds the corners of portfolio items in the grid (overlay) and masonry layouts.', 'wpzoom-portfolio' ) }
@@ -629,6 +639,17 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								min={ 0 }
 								onChange={ ( value ) => setAttributes( { itemBorderRadius: value } ) }
 								value={ itemBorderRadius }
+							/>
+						}
+
+						{ layout == 'justified' &&
+							<RangeControl
+								label={ __( 'Row Height', 'wpzoom-portfolio' ) }
+								help={ __( 'Target height (in pixels) for each row of the justified gallery.', 'wpzoom-portfolio' ) }
+								max={ 500 }
+								min={ 100 }
+								onChange={ ( value ) => setAttributes( { justifiedRowHeight: value } ) }
+								value={ justifiedRowHeight }
 							/>
 						}
 
@@ -676,18 +697,18 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							/>
 						}
 						<HorizontalRule />
-						{ ( layout == 'grid' || layout == 'masonry' ) && <ToggleControl
+						{ isOverlayLayout && <ToggleControl
 							label={ __( 'Show Title', 'wpzoom-portfolio' ) }
 							checked={ showTitle }
 							onChange={ ( value ) => setAttributes( { showTitle: value } ) }
 						/> }
-						{ ( layout == 'grid' || layout == 'masonry' ) && showTitle && <ToggleControl
+						{ isOverlayLayout && showTitle && <ToggleControl
 							label={ __( 'Hide Title on Hover', 'wpzoom-portfolio' ) }
 							help={ __( 'Reveal the clean image (or hover video) by fading the title overlay out on hover.', 'wpzoom-portfolio' ) }
 							checked={ hideTitleOnHover }
 							onChange={ ( value ) => setAttributes( { hideTitleOnHover: value } ) }
 						/> }
-						{ isPro && ( layout == 'grid' || layout == 'masonry' ) && <ToggleControl
+						{ isPro && isOverlayLayout && <ToggleControl
 							label={ __( 'Always Play Video Background', 'wpzoom-portfolio' ) }
 							help={ __( 'Autoplay the hover-video on every item right away, instead of waiting for the visitor to hover. Mirrors the Inspiro theme’s portfolio behaviour. Requires items configured with a background video.', 'wpzoom-portfolio' ) }
 							checked={ alwaysPlayBackgroundVideo }
@@ -696,7 +717,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 						{ fields }
 					</PanelBody>
 					) }
-					{ 'media' === source && ( layout == 'grid' || layout == 'masonry' ) && (
+					{ 'media' === source && isOverlayLayout && (
 					<PanelBody icon={ fieldsIcon } title={ __( 'Fields', 'wpzoom-portfolio' ) } initialOpen={ sectionOpen } className="wpzb-settings-panel">
 						<ToggleControl
 							label={ __( 'Show Title', 'wpzoom-portfolio' ) }
@@ -726,7 +747,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 									onChange={ ( value ) => setAttributes( { lightboxCaption: value } ) }
 								/>
 							}
-							{ ( 'grid' === layout || 'masonry' === layout ) &&
+							{ isOverlayLayout &&
 								<ToggleControl
 									label={ __( 'Make Entire Item Clickable', 'wpzoom-portfolio' ) }
 									help={ __( 'Make a click anywhere on the item trigger an action (set below), instead of only on the title.', 'wpzoom-portfolio' ) }
@@ -734,7 +755,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 									onChange={ ( value ) => setAttributes( { entireItemClickable: value } ) }
 								/>
 							}
-							{ entireItemClickable && lightbox && 'media' !== source && ( 'grid' === layout || 'masonry' === layout ) &&
+							{ entireItemClickable && lightbox && 'media' !== source && isOverlayLayout &&
 								<SelectControl
 									__next40pxDefaultSize
 									label={ __( 'On Item Click', 'wpzoom-portfolio' ) }
@@ -814,7 +835,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 						onChange={ ( nextAlign ) => setAttributes( { filterAlignment: nextAlign } ) }
 					/>
 				</PanelBody>
-				{ ( layout == 'grid' || layout == 'masonry' ) &&
+				{ isOverlayLayout &&
 				<PanelBody title={ __( 'Layout', 'wpzoom-portfolio' ) } initialOpen={ false } className="wpzb-settings-panel">
 					<RangeControl
 						label={ __( 'Background Opacity (Normal)', 'wpzoom-portfolio' ) }

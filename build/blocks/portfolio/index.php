@@ -68,6 +68,10 @@ class WPZOOM_Blocks_Portfolio {
 			'type'    => 'string',
 			'default' => 'grid'
 		],
+		'justifiedRowHeight' => [
+			'type'    => 'number',
+			'default' => 240
+		],
 		'layoutBgOpacity' => [
 			'type'    => 'number',
 			'default' => 0.1
@@ -478,7 +482,7 @@ class WPZOOM_Blocks_Portfolio {
 		// CSS classes for the layout type and columns amount
 		$layout = isset( $attr[ 'layout' ] ) && ! empty( $attr[ 'layout' ] ) ? $attr[ 'layout' ] : 'grid';
 
-		if( 'eccentric' === $layout ) {
+		if( in_array( $layout, array( 'eccentric', 'justified', 'metro' ), true ) ) {
 			$layout = 'grid';
 		}
 

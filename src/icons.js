@@ -59,6 +59,10 @@ export const layoutMasonryIcon = <svg width="24" height="24" viewBox="0 0 24 24"
 
 export const layoutEccentricIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M840-120H120v-186h720v186Zm0-266H120v-189h720v189Zm0-269H120v-185h720v185Z"/></svg>;
 
+export const layoutJustifiedIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M603.85-180v-256.15H860V-180H603.85Zm-160-343.85V-780H860v256.15H443.85ZM100-180v-256.15h416.15V-180H100Zm0-343.85V-780h256.15v256.15H100Z"/></svg>;
+
+export const layoutMetroIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M100-100v-221.54h221.54V-100H100Zm269.23 0v-221.54h221.54V-100H369.23Zm269.23 0v-221.54H860V-100H638.46ZM100-369.23v-221.54h221.54v221.54H100Zm269.23 0v-221.54h221.54v221.54H369.23Zm269.23 0v-221.54H860v221.54H638.46ZM100-638.46V-860h490.77v221.54H100Zm538.46 0V-860H860v221.54H638.46Z"/></svg>;
+
 export const shortcodeIcon = <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<path d="M16.5 21.2552L13.245 18.0002L16.5 14.7452L14.385 12.6152L9 18.0002L14.385 23.3852L16.5 21.2552Z" fill="#18B4AA"/>
 	<path d="M21.615 23.3852L27 18.0002L21.615 12.6152L19.5 14.7452L22.755 18.0002L19.5 21.2552L21.615 23.3852Z" fill="#18B4AA"/>
