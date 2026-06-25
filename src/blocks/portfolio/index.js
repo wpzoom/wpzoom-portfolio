@@ -342,7 +342,16 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							label={ __( 'Portfolio Items Source', 'wpzoom-portfolio' ) }
 							value={ source }
 							options={ customPosts }
-							onChange={ ( value ) => setAttributes( { source: value, categories: [] } ) }
+							onChange={ ( value ) => {
+								const next = { source: value, categories: [] };
+								// The "media" source only supports the Columns, Overlay
+								// and Masonry layouts, so reset any unsupported layout
+								// (e.g. "eccentric") back to a supported default.
+								if ( 'media' === value && ! [ 'list', 'grid', 'masonry' ].includes( layout ) ) {
+									next.layout = 'grid';
+								}
+								setAttributes( next );
+							} }
 							__next40pxDefaultSize
 						/>
 
