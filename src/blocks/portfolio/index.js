@@ -533,7 +533,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 													isSelected ? 'is-selected' : '',
 													isLocked ? 'is-pro-locked' : ''
 												].filter( Boolean ).join( ' ' ) }
-												onClick={ () => setAttributes( { layout: option.value } ) }
+												onClick={ () => { if ( ! isLocked ) setAttributes( { layout: option.value } ); } }
 												onMouseEnter={ option.pro ? () => setShowEccentricTooltip( true ) : undefined }
 												onMouseLeave={ option.pro ? () => setShowEccentricTooltip( false ) : undefined }
 											>
