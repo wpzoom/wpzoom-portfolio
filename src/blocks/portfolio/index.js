@@ -26,7 +26,7 @@ import {
 	TreeSelect,
 	ColorPalette,
 	Tooltip,
-	Popover,
+	Modal,
 	ToolbarGroup,
 	ToolbarButton
 } from '@wordpress/components';
@@ -149,7 +149,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 	} );
 
 	const [ imageSizes, setImageSizes ] = useState( [] );
-	const [ showEccentricTooltip, setShowEccentricTooltip ] = useState( false );
+	const [ showProModal, setShowProModal ] = useState( false );
 
 	useEffect( () => {
 		let isMounted = true;
@@ -528,45 +528,59 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 												type="button"
 												role="radio"
 												aria-checked={ isSelected }
+												aria-disabled={ isLocked }
 												className={ [
 													'wpzb-layout-type__option',
 													isSelected ? 'is-selected' : '',
 													isLocked ? 'is-pro-locked' : ''
 												].filter( Boolean ).join( ' ' ) }
-												onClick={ () => { if ( ! isLocked ) setAttributes( { layout: option.value } ); } }
-												onMouseEnter={ option.pro ? () => setShowEccentricTooltip( true ) : undefined }
-												onMouseLeave={ option.pro ? () => setShowEccentricTooltip( false ) : undefined }
+												onClick={ () => {
+													if ( isLocked ) {
+														setShowProModal( true );
+													} else {
+														setAttributes( { layout: option.value } );
+													}
+												} }
 											>
 												<span className="wpzb-layout-type__icon">{ option.icon }</span>
 												<span className="wpzb-layout-type__label">{ option.label }</span>
-												{ isLocked && showEccentricTooltip && (
-													<Popover
-														className="wpzoom-preview-tooltip"
-														position="top left"
-														noArrow={ false }
-														focusOnMount={ false }
-														expandOnMobile={ true }
-														animate={ true }
-														offset={ 16 }
-													>
-														<img
-															src={ plugin_url + "assets/images/eccentric-preview.jpg" }
-															alt="Eccentric Layout Preview"
-															style={{
-																width: '100%',
-																maxWidth: '400px',
-																height: 'auto',
-																borderRadius: '0'
-															}}
-														/>
-													</Popover>
-												) }
+												{ isLocked &&
+													<span className="wpzb-layout-type__pro-badge">{ __( 'PRO', 'wpzoom-portfolio' ) }</span>
+												}
 											</button>
 										);
 									} ) }
 								</div>
 							</BaseControl>
 						</div>
+
+						{ showProModal && (
+							<Modal
+								title={ __( 'Unlock the Eccentric Layout', 'wpzoom-portfolio' ) }
+								onRequestClose={ () => setShowProModal( false ) }
+								className="wpzb-pro-modal"
+							>
+								<img
+									src={ plugin_url + 'assets/images/eccentric-preview.jpg' }
+									alt={ __( 'Eccentric Layout Preview', 'wpzoom-portfolio' ) }
+									className="wpzb-pro-modal__preview"
+								/>
+								<p className="wpzb-pro-modal__description">
+									{ __( 'The Eccentric layout is a PRO feature. Upgrade to WPZOOM Portfolio PRO to unlock it, along with video portfolios, hover effects and more.', 'wpzoom-portfolio' ) }
+								</p>
+								<div className="wpzb-pro-modal__actions">
+									<Button
+										variant="primary"
+										href="https://www.wpzoom.com/plugins/portfolio-pro/?utm_source=wpadmin&utm_medium=portfolio-free&utm_campaign=eccentric-layout"
+										target="_blank"
+										rel="noopener noreferrer"
+										__next40pxDefaultSize
+									>
+										{ __( 'Upgrade to PRO', 'wpzoom-portfolio' ) }
+									</Button>
+								</div>
+							</Modal>
+						) }
 
 						{ layout == 'eccentric' &&
 							<ToggleControl
