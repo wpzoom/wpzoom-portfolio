@@ -611,7 +611,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							/>
 						}
 
-{ ( layout == 'list' || layout == 'grid' ) && <>
+						{ ( layout == 'list' || layout == 'grid' ) && <>
 							<SelectControl
 								__next40pxDefaultSize
 								label={ __( 'Aspect Ratio', 'wpzoom-portfolio' ) }
@@ -627,7 +627,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 									{ label: __( 'Wide - 16:9', 'wpzoom-portfolio' ), value: '16/9' },
 									{ label: __( 'Tall - 9:16', 'wpzoom-portfolio' ), value: '9/16' },
 								] }
-								onChange={ ( value ) => setAttributes( { imageAspectRatio: value } ) }
+								onChange={ ( value ) => setAttributes( { imageAspectRatio: value, imageHeight: '' } ) }
 							/>
 							<TextControl
 								__next40pxDefaultSize
@@ -636,7 +636,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								placeholder={ __( 'Auto', 'wpzoom-portfolio' ) }
 								min={ 0 }
 								value={ imageHeight }
-								onChange={ ( value ) => setAttributes( { imageHeight: value } ) }
+								onChange={ ( value ) => setAttributes( { imageHeight: value, imageAspectRatio: '' } ) }
 							/>
 						</> }
 
