@@ -178,7 +178,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 	const { amount, categories, columnsAmount, columnsGap, layout, lazyLoad, lightbox, style,
 			lightboxCaption, order, orderBy, readMoreLabel, showAuthor, showCategoryFilter, enableAjaxLoading, showDate,
 			showExcerpt, showReadMore, showThumbnail, showViewAll, source, thumbnailSize, viewAllLabel, viewAllLink, primaryColor, secondaryColor, filterActiveColor, filterAlignment, filterFontSize, filterFontFamily, filterTextTransform, filterLetterSpacing, filterFontWeight, postTitleFontSize, postTitleFontSizeMobile,
-			postTitleTextTransform, postTitleLetterSpacing, postTitleFontFamily, postTitleFontWeight, postTitleLineHeight, postTitleColor, postHoverTitleColor, btnTextColor, btnHoverTextColor, btnBgColor, btnHoverBgColor, btnFontFamily, btnFontSize, btnTextTransform, btnLetterSpacing, btnBorder, btnBorderStyle, btnBorderWidth, btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction,mediaImages, albumLightbox, showTitleOnHover, imageAspectRatio, imageHeight  } = attributes;
+			postTitleTextTransform, postTitleLetterSpacing, postTitleFontFamily, postTitleFontWeight, postTitleLineHeight, postTitleColor, postHoverTitleColor, btnTextColor, btnHoverTextColor, btnBgColor, btnHoverBgColor, btnFontFamily, btnFontSize, btnTextTransform, btnLetterSpacing, btnBorder, btnBorderStyle, btnBorderWidth, btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction,mediaImages, albumLightbox, showTitleOnHover, imageAspectRatio, imageHeight, hoverEffect  } = attributes;
 
 
 	// Static images selected for the "media" Portfolio Items Source.
@@ -660,6 +660,21 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								value={ itemBorderRadius }
 							/>
 						}
+
+						<SelectControl
+							__next40pxDefaultSize
+							label={ __( 'Image Hover Effect', 'wpzoom-portfolio' ) }
+							help={ __( 'How item images react on hover. The filter effects replace the dark title overlay (grid & masonry).', 'wpzoom-portfolio' ) }
+							value={ hoverEffect }
+							options={ [
+								{ label: __( 'Overlay (Default)', 'wpzoom-portfolio' ), value: 'overlay' },
+								{ label: __( 'Grayscale → Color', 'wpzoom-portfolio' ), value: 'grayscale-to-color' },
+								{ label: __( 'Color → Grayscale', 'wpzoom-portfolio' ), value: 'color-to-grayscale' },
+								{ label: __( 'Sepia on Hover', 'wpzoom-portfolio' ), value: 'sepia' },
+								{ label: __( 'Sharp → Blur', 'wpzoom-portfolio' ), value: 'sharp-to-blur' },
+							] }
+							onChange={ ( value ) => setAttributes( { hoverEffect: value } ) }
+						/>
 
 						{ 'media' !== source && ( <>
 						<ToggleControl

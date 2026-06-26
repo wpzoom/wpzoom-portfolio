@@ -156,6 +156,61 @@ $primary_color: #0bb4aa;
 
     }
 
+    // ---------------------------------------------------------------
+    // Image hover effects (chosen via the "Image Hover Effect" dropdown).
+    // The default "Overlay" keeps the dark title overlay and adds no class.
+    // Every other effect carries `has-image-hover-filter`, which hides that
+    // overlay (._item-details) on the grid/masonry layouts so only the image
+    // animates. The filters target just the thumbnail <img>; the lightbox
+    // popover icon (.portfolio-block-entry-thumbnail-popover-content) is left
+    // untouched. A dedicated transition keeps the existing scale-on-hover
+    // (transform) animating at its original speed while the filter fades a
+    // touch slower. The grayscale starting state is skipped while an item is
+    // expanded in the lightbox (.lightbox) so the full-size view stays in color.
+    // ---------------------------------------------------------------
+
+    // Suppress the dark title overlay whenever a filter effect is active.
+    // Only the overlay layouts (grid/masonry) have an absolutely-positioned
+    // overlay here — in the list layout `_item-details` holds the real post
+    // content (title, excerpt, button), so it must never be hidden.
+    &.layout-grid.has-image-hover-filter,
+    &.layout-masonry.has-image-hover-filter {
+        .wpzoom-blocks_portfolio-block_item {
+
+            &:hover .wpzoom-blocks_portfolio-block_item-details,
+            .wpzoom-blocks_portfolio-block_item-details {
+                display: none;
+            }
+        } 
+    }
+
+    &.hover-effect-grayscale-to-color,
+    &.hover-effect-color-to-grayscale,
+    &.hover-effect-sepia,
+    &.hover-effect-sharp-to-blur {
+        .wpzoom-blocks_portfolio-block_item-thumbnail img {
+            transition: filter 0.4s ease, transform 0.2s ease;
+        }
+    }
+
+    &.hover-effect-grayscale-to-color {
+        .wpzoom-blocks_portfolio-block_item:not(.lightbox) .wpzoom-blocks_portfolio-block_item-thumbnail img { filter: grayscale(1); }
+
+        .wpzoom-blocks_portfolio-block_item:hover .wpzoom-blocks_portfolio-block_item-thumbnail img { filter: grayscale(0); }
+    }
+
+    &.hover-effect-color-to-grayscale {
+        .wpzoom-blocks_portfolio-block_item:hover .wpzoom-blocks_portfolio-block_item-thumbnail img { filter: grayscale(1); }
+    }
+
+    &.hover-effect-sepia {
+        .wpzoom-blocks_portfolio-block_item:hover .wpzoom-blocks_portfolio-block_item-thumbnail img { filter: sepia(0.7); }
+    }
+
+    &.hover-effect-sharp-to-blur {
+        .wpzoom-blocks_portfolio-block_item:hover .wpzoom-blocks_portfolio-block_item-thumbnail img { filter: blur(3px); }
+    }
+
     .wpzoom-blocks_portfolio-block_item {
 
         &.has-cover:not(.lightbox) {

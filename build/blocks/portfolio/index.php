@@ -325,6 +325,10 @@ class WPZOOM_Blocks_Portfolio {
 			'type'    => 'string',
 			'default' => 'link'
 		],
+		'hoverEffect' => [
+			'type'    => 'string',
+			'default' => 'overlay'
+		],
 		// Static images used when the "Portfolio Items Source" is set to "media".
 		// Each item: { id, url, fullUrl, alt, title, caption }.
 		'mediaImages' => [
@@ -574,8 +578,18 @@ class WPZOOM_Blocks_Portfolio {
 		$class_unique     = 'wpzoom-portfolio-' . uniqid( 'block-' );
 		$class_css_unique = ' ' . $class_unique;
 
+		// Image hover effect. The default 'overlay' keeps the original dark
+		// title overlay and adds no class. The filter effects (grayscale / color
+		// / sepia / sharp-to-blur) add a `hover-effect-<value>` class plus a
+		// generic `has-image-hover-filter` flag; the matching rules live in
+		// style.css, animate only the thumbnail <img>, and hide the title overlay
+		// on the grid/masonry layouts. The lightbox popover icon is unaffected.
+		$allowed_hover_effects = array( 'grayscale-to-color', 'color-to-grayscale', 'sepia', 'sharp-to-blur' );
+		$hover_effect          = isset( $attr['hoverEffect'] ) ? (string) $attr['hoverEffect'] : 'overlay';
+		$hover_effect_class    = in_array( $hover_effect, $allowed_hover_effects, true ) ? ' hover-effect-' . $hover_effect . ' has-image-hover-filter' : '';
+
 		// Build a string with all the CSS classes
-		$classes = "$class$class_css_unique$lightbox$align$layout_class$columns$post_type_class$extra_class$category_class$ajax_load_class$dark_mode_class$entire_item_clickable_class";
+		$classes = "$class$class_css_unique$lightbox$align$layout_class$columns$post_type_class$extra_class$category_class$ajax_load_class$dark_mode_class$entire_item_clickable_class$hover_effect_class";
 
 		// Try to get portfolio items
 		if ( 'media' === $source ) {
