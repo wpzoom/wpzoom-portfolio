@@ -344,10 +344,10 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							options={ customPosts }
 							onChange={ ( value ) => {
 								const next = { source: value, categories: [] };
-								// The "media" source only supports the Columns, Overlay
+								// The "media" source only supports the Overlay
 								// and Masonry layouts, so reset any unsupported layout
-								// (e.g. "eccentric") back to a supported default.
-								if ( 'media' === value && ! [ 'list', 'grid', 'masonry' ].includes( layout ) ) {
+								// (e.g. "columns" or "eccentric") back to a supported default.
+								if ( 'media' === value && ! [ 'grid', 'masonry' ].includes( layout ) ) {
 									next.layout = 'grid';
 								}
 								setAttributes( next );
@@ -514,7 +514,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 									aria-label={ __( 'Layout Type', 'wpzoom-portfolio' ) }
 								>
 									{ [
-										{ value: 'list',      label: __( 'Columns', 'wpzoom-portfolio' ),   icon: layoutColumnsIcon },
+										...( 'media' !== source ? [ { value: 'list', label: __( 'Columns', 'wpzoom-portfolio' ), icon: layoutColumnsIcon } ] : [] ),
 										{ value: 'grid',      label: __( 'Overlay', 'wpzoom-portfolio' ),   icon: layoutOverlayIcon },
 										{ value: 'masonry',   label: __( 'Masonry', 'wpzoom-portfolio' ),   icon: layoutMasonryIcon },
 										...( 'media' !== source ? [ { value: 'eccentric', label: __( 'Eccentric', 'wpzoom-portfolio' ), icon: layoutEccentricIcon, pro: true } ] : [] )
