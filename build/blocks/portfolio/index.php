@@ -303,10 +303,6 @@ class WPZOOM_Blocks_Portfolio {
 			'type'    => 'string',
 			'default' => ''
 		],
-		'imageWidth' => [
-			'type'    => 'string',
-			'default' => ''
-		],
 		'imageHeight' => [
 			'type'    => 'string',
 			'default' => ''
@@ -880,12 +876,10 @@ class WPZOOM_Blocks_Portfolio {
 		// aspect-ratio, so it needs no definite-height parent. (Styling the
 		// .item-thumbnail container instead does nothing here, because the inner
 		// .item-media > a wrappers are auto-height and a percentage image height
-		// has no definite parent to resolve against.) A fixed width is set on the
-		// whole item so the grid/overlay hover layer stays aligned with the image.
+		// has no definite parent to resolve against.)
 		$image_sizing = '';
 		if ( in_array( $layout, array( 'list', 'grid' ), true ) ) {
 			$aspect_ratio  = isset( $attr['imageAspectRatio'] ) ? trim( (string) $attr['imageAspectRatio'] ) : '';
-			$img_width     = isset( $attr['imageWidth'] ) ? trim( (string) $attr['imageWidth'] ) : '';
 			$img_height    = isset( $attr['imageHeight'] ) ? trim( (string) $attr['imageHeight'] ) : '';
 			$layout_prefix = '.wpzoom-blocks_portfolio-block.' . $class_unique . '.layout-' . $layout . ' .wpzoom-blocks_portfolio-block_item';
 
@@ -902,11 +896,6 @@ class WPZOOM_Blocks_Portfolio {
 				// crops the image into the box instead of stretching it.
 				$img_rules .= 'width:100% !important;object-fit:cover;';
 				$image_sizing .= $layout_prefix . ' .wpzoom-blocks_portfolio-block_item-thumbnail img{' . $img_rules . '}';
-			}
-
-			if ( '' !== $img_width && is_numeric( $img_width ) ) {
-				// Constrain the whole item so the overlay stays aligned with the resized image.
-				$image_sizing .= $layout_prefix . '{width:' . floatval( $img_width ) . 'px;max-width:100%;flex-basis:' . floatval( $img_width ) . 'px;}';
 			}
 		}
 

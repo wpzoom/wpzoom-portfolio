@@ -178,7 +178,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 	const { amount, categories, columnsAmount, columnsGap, layout, lazyLoad, lightbox, style,
 			lightboxCaption, order, orderBy, readMoreLabel, showAuthor, showCategoryFilter, enableAjaxLoading, showDate,
 			showExcerpt, showReadMore, showThumbnail, showViewAll, source, thumbnailSize, viewAllLabel, viewAllLink, primaryColor, secondaryColor, filterActiveColor, filterAlignment, filterFontSize, filterFontFamily, filterTextTransform, filterLetterSpacing, filterFontWeight, postTitleFontSize, postTitleFontSizeMobile,
-			postTitleTextTransform, postTitleLetterSpacing, postTitleFontFamily, postTitleFontWeight, postTitleLineHeight, postTitleColor, postHoverTitleColor, btnTextColor, btnHoverTextColor, btnBgColor, btnHoverBgColor, btnFontFamily, btnFontSize, btnTextTransform, btnLetterSpacing, btnBorder, btnBorderStyle, btnBorderWidth, btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction,mediaImages, albumLightbox, showTitleOnHover, imageAspectRatio, imageWidth, imageHeight  } = attributes;
+			postTitleTextTransform, postTitleLetterSpacing, postTitleFontFamily, postTitleFontWeight, postTitleLineHeight, postTitleColor, postHoverTitleColor, btnTextColor, btnHoverTextColor, btnBgColor, btnHoverBgColor, btnFontFamily, btnFontSize, btnTextTransform, btnLetterSpacing, btnBorder, btnBorderStyle, btnBorderWidth, btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction,mediaImages, albumLightbox, showTitleOnHover, imageAspectRatio, imageHeight  } = attributes;
 
 
 	// Static images selected for the "media" Portfolio Items Source.
@@ -629,26 +629,15 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								] }
 								onChange={ ( value ) => setAttributes( { imageAspectRatio: value } ) }
 							/>
-							<div className="wpzb-portfolio-dimensions" style={ { display: 'flex', gap: '12px' } }>
-								<TextControl
-									__next40pxDefaultSize
-									type="number"
-									label={ __( 'Width (px)', 'wpzoom-portfolio' ) }
-									placeholder={ __( 'Auto', 'wpzoom-portfolio' ) }
-									min={ 0 }
-									value={ imageWidth }
-									onChange={ ( value ) => setAttributes( { imageWidth: value } ) }
-								/>
-								<TextControl
-									__next40pxDefaultSize
-									type="number"
-									label={ __( 'Height (px)', 'wpzoom-portfolio' ) }
-									placeholder={ __( 'Auto', 'wpzoom-portfolio' ) }
-									min={ 0 }
-									value={ imageHeight }
-									onChange={ ( value ) => setAttributes( { imageHeight: value } ) }
-								/>
-							</div>
+							<TextControl
+								__next40pxDefaultSize
+								type="number"
+								label={ __( 'Height (px)', 'wpzoom-portfolio' ) }
+								placeholder={ __( 'Auto', 'wpzoom-portfolio' ) }
+								min={ 0 }
+								value={ imageHeight }
+								onChange={ ( value ) => setAttributes( { imageHeight: value } ) }
+							/>
 						</> }
 
 						{ ( layout == 'grid' || layout == 'masonry' ) &&
