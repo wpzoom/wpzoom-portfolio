@@ -611,28 +611,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							/>
 						}
 
-						{ ( layout == 'grid' || layout == 'masonry' ) &&
-							<RangeControl
-								label={ __( 'Columns Gap', 'wpzoom-portfolio' ) }
-								max={ 100 }
-								min={ 0 }
-								onChange={ ( value ) => setAttributes( { columnsGap: value } ) }
-								value={ columnsGap }
-							/>
-						}
-
-						{ ( layout == 'grid' || layout == 'masonry' ) &&
-							<RangeControl
-								label={ __( 'Item Border Radius', 'wpzoom-portfolio' ) }
-								help={ __( 'Rounds the corners of portfolio items in the grid (overlay) and masonry layouts.', 'wpzoom-portfolio' ) }
-								max={ 100 }
-								min={ 0 }
-								onChange={ ( value ) => setAttributes( { itemBorderRadius: value } ) }
-								value={ itemBorderRadius }
-							/>
-						}
-
-						{ ( layout == 'list' || layout == 'grid' ) && <>
+{ ( layout == 'list' || layout == 'grid' ) && <>
 							<SelectControl
 								__next40pxDefaultSize
 								label={ __( 'Aspect Ratio', 'wpzoom-portfolio' ) }
@@ -671,6 +650,27 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								/>
 							</div>
 						</> }
+
+						{ ( layout == 'grid' || layout == 'masonry' ) &&
+							<RangeControl
+								label={ __( 'Columns Gap', 'wpzoom-portfolio' ) }
+								max={ 100 }
+								min={ 0 }
+								onChange={ ( value ) => setAttributes( { columnsGap: value } ) }
+								value={ columnsGap }
+							/>
+						}
+
+						{ ( layout == 'grid' || layout == 'masonry' ) &&
+							<RangeControl
+								label={ __( 'Item Border Radius', 'wpzoom-portfolio' ) }
+								help={ __( 'Rounds the corners of portfolio items in the grid (overlay) and masonry layouts.', 'wpzoom-portfolio' ) }
+								max={ 100 }
+								min={ 0 }
+								onChange={ ( value ) => setAttributes( { itemBorderRadius: value } ) }
+								value={ itemBorderRadius }
+							/>
+						}
 
 						{ 'media' !== source && ( <>
 						<ToggleControl
