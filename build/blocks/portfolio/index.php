@@ -299,6 +299,18 @@ class WPZOOM_Blocks_Portfolio {
 			'type'    => 'number',
 			'default' => 0
 		],
+		'imageAspectRatio' => [
+			'type'    => 'string',
+			'default' => ''
+		],
+		'imageWidth' => [
+			'type'    => 'string',
+			'default' => ''
+		],
+		'imageHeight' => [
+			'type'    => 'string',
+			'default' => ''
+		],
 		'hideTitleOnHover' => [
 			'type'    => 'boolean',
 			'default' => false
@@ -862,6 +874,42 @@ class WPZOOM_Blocks_Portfolio {
 			$masonry_responsive_css .= '@media (max-width: 600px){' . $unique_selector . '{width:100% !important;margin-right:0 !important;}}';
 		}
 
+		// Image aspect ratio / dimensions for the Columns (list) and Overlay (grid)
+		// layouts. The aspect ratio and fixed height are set on the <img> itself:
+		// an image is a replaced element and derives its box straight from
+		// aspect-ratio, so it needs no definite-height parent. (Styling the
+		// .item-thumbnail container instead does nothing here, because the inner
+		// .item-media > a wrappers are auto-height and a percentage image height
+		// has no definite parent to resolve against.) A fixed width is set on the
+		// whole item so the grid/overlay hover layer stays aligned with the image.
+		$image_sizing = '';
+		if ( in_array( $layout, array( 'list', 'grid' ), true ) ) {
+			$aspect_ratio  = isset( $attr['imageAspectRatio'] ) ? trim( (string) $attr['imageAspectRatio'] ) : '';
+			$img_width     = isset( $attr['imageWidth'] ) ? trim( (string) $attr['imageWidth'] ) : '';
+			$img_height    = isset( $attr['imageHeight'] ) ? trim( (string) $attr['imageHeight'] ) : '';
+			$layout_prefix = '.wpzoom-blocks_portfolio-block.' . $class_unique . '.layout-' . $layout . ' .wpzoom-blocks_portfolio-block_item';
+
+			$img_rules = '';
+			if ( '' !== $aspect_ratio ) {
+				$img_rules .= 'aspect-ratio:' . self::sanitize_css_value( $aspect_ratio ) . ';';
+			}
+			if ( '' !== $img_height && is_numeric( $img_height ) ) {
+				$img_rules .= 'height:' . floatval( $img_height ) . 'px;';
+			}
+			if ( '' !== $img_rules ) {
+				// width:100% (already forced by the base CSS) keeps the width
+				// definite so the height can derive from aspect-ratio; object-fit
+				// crops the image into the box instead of stretching it.
+				$img_rules .= 'width:100% !important;object-fit:cover;';
+				$image_sizing .= $layout_prefix . ' .wpzoom-blocks_portfolio-block_item-thumbnail img{' . $img_rules . '}';
+			}
+
+			if ( '' !== $img_width && is_numeric( $img_width ) ) {
+				// Constrain the whole item so the overlay stays aligned with the resized image.
+				$image_sizing .= $layout_prefix . '{width:' . floatval( $img_width ) . 'px;max-width:100%;flex-basis:' . floatval( $img_width ) . 'px;}';
+			}
+		}
+
 		$css = sprintf(
 			'<style>%s</style>',
 			$general_style .
@@ -878,6 +926,7 @@ class WPZOOM_Blocks_Portfolio {
 			$masonry_columns_gap .
 			$masonry_responsive_css .
 			$item_border_radius .
+			$image_sizing .
 			$layout_style .
 			$mobile_style
 		);
