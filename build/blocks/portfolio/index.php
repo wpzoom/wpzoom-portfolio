@@ -910,7 +910,7 @@ class WPZOOM_Blocks_Portfolio {
 				// width:100% (already forced by the base CSS) keeps the width
 				// definite so the height can derive from aspect-ratio; object-fit
 				// crops the image into the box instead of stretching it.
-				$img_rules .= 'width:100% !important;object-fit:cover;';
+				$img_rules .= 'width:100% !important;object-fit:cover;object-position: top;';
 				$image_sizing .= $layout_prefix . ' .wpzoom-blocks_portfolio-block_item-thumbnail img{' . $img_rules . '}';
 			}
 		}
