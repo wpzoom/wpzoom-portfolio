@@ -794,7 +794,8 @@ $primary_color: #0bb4aa;
 // lives OUTSIDE the details overlay and keeps its higher z-index (80), so
 // it stacks above this stretched link and still opens the lightbox.
 .wpzoom-blocks_portfolio-block.entire-item-clickable.layout-grid,
-.wpzoom-blocks_portfolio-block.entire-item-clickable.layout-masonry {
+.wpzoom-blocks_portfolio-block.entire-item-clickable.layout-masonry,
+.wpzoom-blocks_portfolio-block.entire-item-clickable.layout-carousel {
     .wpzoom-blocks_portfolio-block_item-wrap,
     .portfolio_item {
         cursor: pointer;
@@ -818,7 +819,8 @@ $primary_color: #0bb4aa;
 // the whole card opens the lightbox instead, handled in JS — no permalink
 // overlay, so clicks aren't swallowed before the JS handler runs.
 .wpzoom-blocks_portfolio-block.entire-item-clickable.layout-grid:not(.entire-item-action-lightbox),
-.wpzoom-blocks_portfolio-block.entire-item-clickable.layout-masonry:not(.entire-item-action-lightbox) {
+.wpzoom-blocks_portfolio-block.entire-item-clickable.layout-masonry:not(.entire-item-action-lightbox),
+.wpzoom-blocks_portfolio-block.entire-item-clickable.layout-carousel:not(.entire-item-action-lightbox) {
     .wpzoom-blocks_portfolio-block_item-thumbnail a[rel~="bookmark"]::after {
         content: '';
         position: absolute;

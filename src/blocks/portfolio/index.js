@@ -846,7 +846,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 									onChange={ ( value ) => setAttributes( { albumLightbox: value } ) }
 								/>
 							}
-							{ ( 'grid' === layout || 'masonry' === layout ) &&
+							{ ( 'grid' === layout || 'masonry' === layout || 'carousel' === layout ) &&
 								<ToggleControl
 									label={ __( 'Make Entire Item Clickable', 'wpzoom-portfolio' ) }
 									help={ __( 'Make a click anywhere on the item trigger an action (set below), instead of only on the title.', 'wpzoom-portfolio' ) }
@@ -854,7 +854,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 									onChange={ ( value ) => setAttributes( { entireItemClickable: value } ) }
 								/>
 							}
-							{ entireItemClickable && lightbox && 'media' !== source && ( 'grid' === layout || 'masonry' === layout ) &&
+							{ entireItemClickable && lightbox && 'media' !== source && ( 'grid' === layout || 'masonry' === layout || 'carousel' === layout ) &&
 								<SelectControl
 									__next40pxDefaultSize
 									label={ __( 'On Item Click', 'wpzoom-portfolio' ) }
