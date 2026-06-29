@@ -62,7 +62,8 @@ import {
 	layoutColumnsIcon,
 	layoutOverlayIcon,
 	layoutMasonryIcon,
-	layoutEccentricIcon
+	layoutEccentricIcon,
+	layoutCarouselIcon
 } from '../../icons';
 
 /**
@@ -149,7 +150,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 	} );
 
 	const [ imageSizes, setImageSizes ] = useState( [] );
-	const [ showProModal, setShowProModal ] = useState( false );
+	const [ proModalLayout, setProModalLayout ] = useState( null );
 
 	useEffect( () => {
 		let isMounted = true;
@@ -178,7 +179,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 	const { amount, categories, columnsAmount, columnsGap, layout, lazyLoad, lightbox, style,
 			lightboxCaption, order, orderBy, readMoreLabel, showAuthor, showCategoryFilter, enableAjaxLoading, showDate,
 			showExcerpt, showReadMore, showThumbnail, showViewAll, source, thumbnailSize, viewAllLabel, viewAllLink, primaryColor, secondaryColor, filterActiveColor, filterAlignment, filterFontSize, filterFontFamily, filterTextTransform, filterLetterSpacing, filterFontWeight, postTitleFontSize, postTitleFontSizeMobile,
-			postTitleTextTransform, postTitleLetterSpacing, postTitleFontFamily, postTitleFontWeight, postTitleLineHeight, postTitleColor, postHoverTitleColor, btnTextColor, btnHoverTextColor, btnBgColor, btnHoverBgColor, btnFontFamily, btnFontSize, btnTextTransform, btnLetterSpacing, btnBorder, btnBorderStyle, btnBorderWidth, btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction,mediaImages, albumLightbox, showTitleOnHover, imageAspectRatio, imageHeight, hoverEffect  } = attributes;
+			postTitleTextTransform, postTitleLetterSpacing, postTitleFontFamily, postTitleFontWeight, postTitleLineHeight, postTitleColor, postHoverTitleColor, btnTextColor, btnHoverTextColor, btnBgColor, btnHoverBgColor, btnFontFamily, btnFontSize, btnTextTransform, btnLetterSpacing, btnBorder, btnBorderStyle, btnBorderWidth, btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction,mediaImages, albumLightbox, showTitleOnHover, imageAspectRatio, imageHeight, hoverEffect, carouselLoop, carouselAutoplay, carouselAutoplayDelay, carouselNavigation, carouselPagination  } = attributes;
 
 
 	// Static images selected for the "media" Portfolio Items Source.
@@ -312,6 +313,21 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 		customPosts = [...customPosts, ...transformedArray];
 	}
 
+	const proLayoutMeta = {
+		eccentric: {
+			title: __( 'Unlock the Eccentric Layout', 'wpzoom-portfolio' ),
+			preview: plugin_url + 'assets/images/eccentric-preview.jpg',
+			description: __( 'The Eccentric layout is a PRO feature. Upgrade to WPZOOM Portfolio PRO to unlock it, along with video portfolios, hover effects and more.', 'wpzoom-portfolio' ),
+			utm: 'eccentric-layout',
+		},
+		carousel: {
+			title: __( 'Unlock the Carousel Layout', 'wpzoom-portfolio' ),
+			preview: '',
+			description: __( 'The Carousel layout is a PRO feature. Upgrade to WPZOOM Portfolio PRO to display your portfolio as a touch-friendly slider, along with video portfolios, hover effects and more.', 'wpzoom-portfolio' ),
+			utm: 'carousel-layout',
+		},
+	};
+
 	return (
 		<>
 			<InspectorControls group="settings">
@@ -347,7 +363,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								// The "media" source only supports the Overlay
 								// and Masonry layouts, so reset any unsupported layout
 								// (e.g. "columns" or "eccentric") back to a supported default.
-								if ( 'media' === value && ! [ 'grid', 'masonry' ].includes( layout ) ) {
+								if ( 'media' === value && ! [ 'grid', 'masonry', 'carousel' ].includes( layout ) ) {
 									next.layout = 'grid';
 								}
 								setAttributes( next );
@@ -517,6 +533,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 										...( 'media' !== source ? [ { value: 'list', label: __( 'Columns', 'wpzoom-portfolio' ), icon: layoutColumnsIcon } ] : [] ),
 										{ value: 'grid',      label: __( 'Overlay', 'wpzoom-portfolio' ),   icon: layoutOverlayIcon },
 										{ value: 'masonry',   label: __( 'Masonry', 'wpzoom-portfolio' ),   icon: layoutMasonryIcon },
+										{ value: 'carousel',  label: __( 'Carousel', 'wpzoom-portfolio' ),  icon: layoutCarouselIcon, pro: true },
 										...( 'media' !== source ? [ { value: 'eccentric', label: __( 'Eccentric', 'wpzoom-portfolio' ), icon: layoutEccentricIcon, pro: true } ] : [] )
 									].map( ( option ) => {
 										const isSelected = layout === option.value;
@@ -536,7 +553,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 												].filter( Boolean ).join( ' ' ) }
 												onClick={ () => {
 													if ( isLocked ) {
-														setShowProModal( true );
+														setProModalLayout( option.value );
 													} else {
 														setAttributes( { layout: option.value } );
 													}
@@ -554,24 +571,26 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							</BaseControl>
 						</div>
 
-						{ showProModal && (
+						{ proModalLayout && proLayoutMeta[ proModalLayout ] && (
 							<Modal
-								title={ __( 'Unlock the Eccentric Layout', 'wpzoom-portfolio' ) }
-								onRequestClose={ () => setShowProModal( false ) }
+								title={ proLayoutMeta[ proModalLayout ].title }
+								onRequestClose={ () => setProModalLayout( null ) }
 								className="wpzb-pro-modal"
 							>
-								<img
-									src={ plugin_url + 'assets/images/eccentric-preview.jpg' }
-									alt={ __( 'Eccentric Layout Preview', 'wpzoom-portfolio' ) }
-									className="wpzb-pro-modal__preview"
-								/>
+								{ proLayoutMeta[ proModalLayout ].preview &&
+									<img
+										src={ proLayoutMeta[ proModalLayout ].preview }
+										alt={ proLayoutMeta[ proModalLayout ].title }
+										className="wpzb-pro-modal__preview"
+									/>
+								}
 								<p className="wpzb-pro-modal__description">
-									{ __( 'The Eccentric layout is a PRO feature. Upgrade to WPZOOM Portfolio PRO to unlock it, along with video portfolios, hover effects and more.', 'wpzoom-portfolio' ) }
+									{ proLayoutMeta[ proModalLayout ].description }
 								</p>
 								<div className="wpzb-pro-modal__actions">
 									<Button
 										variant="primary"
-										href="https://www.wpzoom.com/plugins/portfolio-pro/?utm_source=wpadmin&utm_medium=portfolio-free&utm_campaign=eccentric-layout"
+										href={ 'https://www.wpzoom.com/plugins/portfolio-pro/?utm_source=wpadmin&utm_medium=portfolio-free&utm_campaign=' + proLayoutMeta[ proModalLayout ].utm }
 										target="_blank"
 										rel="noopener noreferrer"
 										__next40pxDefaultSize
@@ -611,7 +630,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							/>
 						}
 
-						{ ( layout == 'list' || layout == 'grid' ) && <>
+						{ ( layout == 'list' || layout == 'grid' || layout == 'carousel' ) && <>
 							<SelectControl
 								__next40pxDefaultSize
 								label={ __( 'Aspect Ratio', 'wpzoom-portfolio' ) }
@@ -660,6 +679,55 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								value={ itemBorderRadius }
 							/>
 						}
+
+						{ layout == 'carousel' && <>
+							<RangeControl
+								label={ __( 'Slides per View', 'wpzoom-portfolio' ) }
+								help={ __( 'Number of slides shown at once on desktop. Reduces automatically on smaller screens.', 'wpzoom-portfolio' ) }
+								max={ 6 }
+								min={ 1 }
+								onChange={ ( value ) => setAttributes( { columnsAmount: value } ) }
+								value={ columnsAmount }
+							/>
+							<RangeControl
+								label={ __( 'Space Between Slides (px)', 'wpzoom-portfolio' ) }
+								max={ 100 }
+								min={ 0 }
+								onChange={ ( value ) => setAttributes( { columnsGap: value } ) }
+								value={ columnsGap }
+							/>
+							<ToggleControl
+								label={ __( 'Show Navigation Arrows', 'wpzoom-portfolio' ) }
+								checked={ carouselNavigation }
+								onChange={ ( value ) => setAttributes( { carouselNavigation: value } ) }
+							/>
+							<ToggleControl
+								label={ __( 'Show Pagination Dots', 'wpzoom-portfolio' ) }
+								checked={ carouselPagination }
+								onChange={ ( value ) => setAttributes( { carouselPagination: value } ) }
+							/>
+							<ToggleControl
+								label={ __( 'Loop', 'wpzoom-portfolio' ) }
+								help={ __( 'Continuously loop back to the first slide after the last.', 'wpzoom-portfolio' ) }
+								checked={ carouselLoop }
+								onChange={ ( value ) => setAttributes( { carouselLoop: value } ) }
+							/>
+							<ToggleControl
+								label={ __( 'Autoplay', 'wpzoom-portfolio' ) }
+								checked={ carouselAutoplay }
+								onChange={ ( value ) => setAttributes( { carouselAutoplay: value } ) }
+							/>
+							{ carouselAutoplay &&
+								<RangeControl
+									label={ __( 'Autoplay Delay (ms)', 'wpzoom-portfolio' ) }
+									max={ 10000 }
+									min={ 1000 }
+									step={ 500 }
+									onChange={ ( value ) => setAttributes( { carouselAutoplayDelay: value } ) }
+									value={ carouselAutoplayDelay }
+								/>
+							}
+						</> }
 
 						<SelectControl
 							__next40pxDefaultSize
@@ -720,12 +788,12 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							/>
 						}
 						<HorizontalRule />
-						{ ( layout == 'grid' || layout == 'masonry' ) && <ToggleControl
+						{ ( layout == 'grid' || layout == 'masonry' || layout == 'carousel' ) && <ToggleControl
 							label={ __( 'Show Title', 'wpzoom-portfolio' ) }
 							checked={ showTitle }
 							onChange={ ( value ) => setAttributes( { showTitle: value } ) }
 						/> }
-						{ ( layout == 'grid' || layout == 'masonry' ) && showTitle && <ToggleControl
+						{ ( layout == 'grid' || layout == 'masonry' || layout == 'carousel' ) && showTitle && <ToggleControl
 							label={ __( 'Hide Title on Hover', 'wpzoom-portfolio' ) }
 							help={ __( 'Reveal the clean image (or hover video) by fading the title overlay out on hover.', 'wpzoom-portfolio' ) }
 							checked={ hideTitleOnHover }
@@ -740,7 +808,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 						{ fields }
 					</PanelBody>
 					) }
-					{ 'media' === source && ( layout == 'grid' || layout == 'masonry' ) && (
+					{ 'media' === source && ( layout == 'grid' || layout == 'masonry' || layout == 'carousel' ) && (
 					<PanelBody icon={ fieldsIcon } title={ __( 'Fields', 'wpzoom-portfolio' ) } initialOpen={ sectionOpen } className="wpzb-settings-panel">
 						<ToggleControl
 							label={ __( 'Show Title', 'wpzoom-portfolio' ) }

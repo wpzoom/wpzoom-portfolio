@@ -59,6 +59,12 @@ export const layoutMasonryIcon = <svg width="24" height="24" viewBox="0 0 24 24"
 
 export const layoutEccentricIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M840-120H120v-186h720v186Zm0-266H120v-189h720v189Zm0-269H120v-185h720v185Z"/></svg>;
 
+export const layoutCarouselIcon = <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+	<rect x="7" y="6" width="10" height="12" rx="1" />
+	<rect x="2" y="8" width="3" height="8" rx="1" opacity="0.5" />
+	<rect x="19" y="8" width="3" height="8" rx="1" opacity="0.5" />
+</svg>;
+
 export const shortcodeIcon = <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<path d="M16.5 21.2552L13.245 18.0002L16.5 14.7452L14.385 12.6152L9 18.0002L14.385 23.3852L16.5 21.2552Z" fill="#18B4AA"/>
 	<path d="M21.615 23.3852L27 18.0002L21.615 12.6152L19.5 14.7452L22.755 18.0002L19.5 21.2552L21.615 23.3852Z" fill="#18B4AA"/>

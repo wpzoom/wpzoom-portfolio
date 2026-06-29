@@ -490,7 +490,9 @@ class WPZOOM_Blocks_Portfolio {
 		// CSS classes for the layout type and columns amount
 		$layout = isset( $attr[ 'layout' ] ) && ! empty( $attr[ 'layout' ] ) ? $attr[ 'layout' ] : 'grid';
 
-		if( 'eccentric' === $layout ) {
+		// Eccentric and Carousel are PRO-only layouts. When PRO is inactive this
+		// fallback renderer runs, so degrade them gracefully to the grid (overlay).
+		if( in_array( $layout, array( 'eccentric', 'carousel' ), true ) ) {
 			$layout = 'grid';
 		}
 
