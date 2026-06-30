@@ -65,6 +65,8 @@ export const layoutCarouselIcon = <svg width="24" height="24" viewBox="0 0 24 24
 	<rect x="19" y="8" width="3" height="8" rx="1" opacity="0.5" />
 </svg>;
 
+export const layoutMetroIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M100-100v-221.54h221.54V-100H100Zm269.23 0v-221.54h221.54V-100H369.23Zm269.23 0v-221.54H860V-100H638.46ZM100-369.23v-221.54h221.54v221.54H100Zm269.23 0v-221.54h221.54v221.54H369.23Zm269.23 0v-221.54H860v221.54H638.46ZM100-638.46V-860h490.77v221.54H100Zm538.46 0V-860H860v221.54H638.46Z"/></svg>;
+
 export const shortcodeIcon = <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<path d="M16.5 21.2552L13.245 18.0002L16.5 14.7452L14.385 12.6152L9 18.0002L14.385 23.3852L16.5 21.2552Z" fill="#18B4AA"/>
 	<path d="M21.615 23.3852L27 18.0002L21.615 12.6152L19.5 14.7452L22.755 18.0002L19.5 21.2552L21.615 23.3852Z" fill="#18B4AA"/>

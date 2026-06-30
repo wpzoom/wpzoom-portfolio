@@ -63,7 +63,8 @@ import {
 	layoutOverlayIcon,
 	layoutMasonryIcon,
 	layoutEccentricIcon,
-	layoutCarouselIcon
+	layoutCarouselIcon,
+	layoutMetroIcon
 } from '../../icons';
 
 /**
@@ -326,6 +327,12 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 			description: __( 'The Carousel layout is a PRO feature. Upgrade to WPZOOM Portfolio PRO to display your portfolio as a touch-friendly slider, along with video portfolios, hover effects and more.', 'wpzoom-portfolio' ),
 			utm: 'carousel-layout',
 		},
+		metro: {
+			title: __( 'Unlock the Metro Layout', 'wpzoom-portfolio' ),
+			preview: '',
+			description: __( 'The Metro layout is a PRO feature. Upgrade to WPZOOM Portfolio PRO to display your portfolio as a dynamic mosaic grid with featured tiles, along with video portfolios, hover effects and more.', 'wpzoom-portfolio' ),
+			utm: 'metro-layout',
+		},
 	};
 
 	return (
@@ -363,7 +370,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								// The "media" source only supports the Overlay
 								// and Masonry layouts, so reset any unsupported layout
 								// (e.g. "columns" or "eccentric") back to a supported default.
-								if ( 'media' === value && ! [ 'grid', 'masonry', 'carousel' ].includes( layout ) ) {
+								if ( 'media' === value && ! [ 'grid', 'masonry', 'carousel', 'metro' ].includes( layout ) ) {
 									next.layout = 'grid';
 								}
 								setAttributes( next );
@@ -533,6 +540,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 										...( 'media' !== source ? [ { value: 'list', label: __( 'Columns', 'wpzoom-portfolio' ), icon: layoutColumnsIcon } ] : [] ),
 										{ value: 'grid',      label: __( 'Overlay', 'wpzoom-portfolio' ),   icon: layoutOverlayIcon },
 										{ value: 'masonry',   label: __( 'Masonry', 'wpzoom-portfolio' ),   icon: layoutMasonryIcon },
+										{ value: 'metro',     label: __( 'Metro', 'wpzoom-portfolio' ),     icon: layoutMetroIcon, pro: true },
 										{ value: 'carousel',  label: __( 'Carousel', 'wpzoom-portfolio' ),  icon: layoutCarouselIcon, pro: true },
 										...( 'media' !== source ? [ { value: 'eccentric', label: __( 'Eccentric', 'wpzoom-portfolio' ), icon: layoutEccentricIcon, pro: true } ] : [] )
 									].map( ( option ) => {
@@ -620,7 +628,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							/>
 						}
 
-						{ ( layout == 'grid' || layout == 'masonry' ) &&
+						{ ( layout == 'grid' || layout == 'masonry' || layout == 'metro' ) &&
 							<RangeControl
 								label={ __( 'Amount of Columns', 'wpzoom-portfolio' ) }
 								max={ 6 }
@@ -659,7 +667,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							/>
 						</> }
 
-						{ ( layout == 'grid' || layout == 'masonry' ) &&
+						{ ( layout == 'grid' || layout == 'masonry' || layout == 'metro' ) &&
 							<RangeControl
 								label={ __( 'Columns Gap', 'wpzoom-portfolio' ) }
 								max={ 100 }
@@ -669,7 +677,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							/>
 						}
 
-						{ ( layout == 'grid' || layout == 'masonry' ) &&
+						{ ( layout == 'grid' || layout == 'masonry' || layout == 'metro' ) &&
 							<RangeControl
 								label={ __( 'Item Border Radius', 'wpzoom-portfolio' ) }
 								help={ __( 'Rounds the corners of portfolio items in the grid (overlay) and masonry layouts.', 'wpzoom-portfolio' ) }
@@ -788,18 +796,18 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 							/>
 						}
 						<HorizontalRule />
-						{ ( layout == 'grid' || layout == 'masonry' || layout == 'carousel' ) && <ToggleControl
+						{ ( layout == 'grid' || layout == 'masonry' || layout == 'carousel' || layout == 'metro' ) && <ToggleControl
 							label={ __( 'Show Title', 'wpzoom-portfolio' ) }
 							checked={ showTitle }
 							onChange={ ( value ) => setAttributes( { showTitle: value } ) }
 						/> }
-						{ ( layout == 'grid' || layout == 'masonry' || layout == 'carousel' ) && showTitle && <ToggleControl
+						{ ( layout == 'grid' || layout == 'masonry' || layout == 'carousel' || layout == 'metro' ) && showTitle && <ToggleControl
 							label={ __( 'Hide Title on Hover', 'wpzoom-portfolio' ) }
 							help={ __( 'Reveal the clean image (or hover video) by fading the title overlay out on hover.', 'wpzoom-portfolio' ) }
 							checked={ hideTitleOnHover }
 							onChange={ ( value ) => setAttributes( { hideTitleOnHover: value } ) }
 						/> }
-						{ isPro && ( layout == 'grid' || layout == 'masonry' ) && <ToggleControl
+						{ isPro && ( layout == 'grid' || layout == 'masonry' || layout == 'metro' ) && <ToggleControl
 							label={ __( 'Always Play Video Background', 'wpzoom-portfolio' ) }
 							help={ __( 'Autoplay the hover-video on every item right away, instead of waiting for the visitor to hover. Mirrors the Inspiro theme’s portfolio behaviour. Requires items configured with a background video.', 'wpzoom-portfolio' ) }
 							checked={ alwaysPlayBackgroundVideo }
@@ -808,7 +816,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 						{ fields }
 					</PanelBody>
 					) }
-					{ 'media' === source && ( layout == 'grid' || layout == 'masonry' || layout == 'carousel' ) && (
+					{ 'media' === source && ( layout == 'grid' || layout == 'masonry' || layout == 'carousel' || layout == 'metro' ) && (
 					<PanelBody icon={ fieldsIcon } title={ __( 'Fields', 'wpzoom-portfolio' ) } initialOpen={ sectionOpen } className="wpzb-settings-panel">
 						<ToggleControl
 							label={ __( 'Show Title', 'wpzoom-portfolio' ) }
@@ -846,7 +854,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 									onChange={ ( value ) => setAttributes( { albumLightbox: value } ) }
 								/>
 							}
-							{ ( 'grid' === layout || 'masonry' === layout || 'carousel' === layout ) &&
+							{ ( 'grid' === layout || 'masonry' === layout || 'carousel' === layout || 'metro' === layout ) &&
 								<ToggleControl
 									label={ __( 'Make Entire Item Clickable', 'wpzoom-portfolio' ) }
 									help={ __( 'Make a click anywhere on the item trigger an action (set below), instead of only on the title.', 'wpzoom-portfolio' ) }
@@ -854,7 +862,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 									onChange={ ( value ) => setAttributes( { entireItemClickable: value } ) }
 								/>
 							}
-							{ entireItemClickable && lightbox && 'media' !== source && ( 'grid' === layout || 'masonry' === layout || 'carousel' === layout ) &&
+							{ entireItemClickable && lightbox && 'media' !== source && ( 'grid' === layout || 'masonry' === layout || 'carousel' === layout || 'metro' === layout ) &&
 								<SelectControl
 									__next40pxDefaultSize
 									label={ __( 'On Item Click', 'wpzoom-portfolio' ) }
@@ -934,7 +942,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 						onChange={ ( nextAlign ) => setAttributes( { filterAlignment: nextAlign } ) }
 					/>
 				</PanelBody>
-				{ ( layout == 'grid' || layout == 'masonry' ) &&
+				{ ( layout == 'grid' || layout == 'masonry' || layout == 'metro' ) &&
 				<PanelBody title={ __( 'Layout', 'wpzoom-portfolio' ) } initialOpen={ false } className="wpzb-settings-panel">
 					<RangeControl
 						label={ __( 'Background Opacity (Normal)', 'wpzoom-portfolio' ) }
