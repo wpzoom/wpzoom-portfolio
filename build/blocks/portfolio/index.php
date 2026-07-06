@@ -397,6 +397,9 @@ class WPZOOM_Blocks_Portfolio {
 		$output .= $this->items_html( $data );
 		$output .= '</div>';
 
+		// Opt the lightbox image links out of Elementor's global Image Lightbox.
+		$output = str_replace( 'class="mfp-image', 'data-elementor-open-lightbox="no" class="mfp-image', $output );
+
 		echo $output;
 
 		wp_die();
