@@ -27,7 +27,7 @@ import {
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 import { groupBy } from 'lodash';
 import ServerSideRender from '@wordpress/server-side-render';
 
