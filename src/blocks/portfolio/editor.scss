@@ -105,16 +105,20 @@
 }
 
 /**
- * Layout Type picker.
+ * Card pickers: "Layout Type" and "Portfolio Items Source".
  *
  * Built from real <button> markup with imported SVG icon components — no
  * CSS-generated icons (::before) and no styling of hidden radio inputs.
+ * Both pickers share this block so they stay visually identical; the `&__x`
+ * children expand against the whole selector list.
  */
-.wpzb-layout-type-control {
+.wpzb-layout-type-control,
+.wpzb-source-type-control {
 	margin-bottom: 1em;
 }
 
-.wpzb-layout-type {
+.wpzb-layout-type,
+.wpzb-source-type {
 	display: flex;
 	flex-direction: row;
 	gap: 4px;

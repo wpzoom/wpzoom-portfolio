@@ -59,6 +59,16 @@ export const layoutMasonryIcon = <svg width="24" height="24" viewBox="0 0 24 24"
 
 export const layoutEccentricIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M840-120H120v-186h720v186Zm0-266H120v-189h720v189Zm0-269H120v-185h720v185Z"/></svg>;
 
+/**
+ * Portfolio Items Source icons.
+ *
+ * Same conventions as the Layout Type icons above: 24x24 and
+ * `fill="currentColor"` so they inherit the option's text colour.
+ */
+export const sourcePostsIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm120-160h200q17 0 28.5-11.5T560-320q0-17-11.5-28.5T520-360H320q-17 0-28.5 11.5T280-320q0 17 11.5 28.5T320-280Zm0-160h320q17 0 28.5-11.5T680-480q0-17-11.5-28.5T640-520H320q-17 0-28.5 11.5T280-480q0 17 11.5 28.5T320-440Zm0-160h320q17 0 28.5-11.5T680-640q0-17-11.5-28.5T640-680H320q-17 0-28.5 11.5T280-640q0 17 11.5 28.5T320-600Z"/></svg>;
+
+export const sourceImagesIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm80-160h400q12 0 18-11t-2-21L586-459q-6-8-16-8t-16 8L450-320l-74-99q-6-8-16-8t-16 8l-80 107q-8 10-2 21t18 11Z"/></svg>;
+
 export const shortcodeIcon = <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<path d="M16.5 21.2552L13.245 18.0002L16.5 14.7452L14.385 12.6152L9 18.0002L14.385 23.3852L16.5 21.2552Z" fill="#18B4AA"/>
 	<path d="M21.615 23.3852L27 18.0002L21.615 12.6152L19.5 14.7452L22.755 18.0002L19.5 21.2552L21.615 23.3852Z" fill="#18B4AA"/>

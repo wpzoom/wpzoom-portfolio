@@ -62,7 +62,9 @@ import {
 	layoutColumnsIcon,
 	layoutOverlayIcon,
 	layoutMasonryIcon,
-	layoutEccentricIcon
+	layoutEccentricIcon,
+	sourcePostsIcon,
+	sourceImagesIcon
 } from '../../icons';
 
 /**
@@ -184,6 +186,32 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 	// Static images selected for the "media" Portfolio Items Source.
 	const images = Array.isArray( mediaImages ) ? mediaImages : [];
 
+	// The "Portfolio Items Source" picker is derived from the stored `source`
+	// attribute rather than a new one: "media" is the static image gallery and
+	// anything else is a post type. Existing blocks keep working untouched.
+	const sourceKind = 'media' === source ? 'media' : 'posts';
+
+	// Remember the post type in use so switching to Images and back restores it
+	// instead of silently falling back to the default.
+	const [ lastPostType, setLastPostType ] = useState( 'media' === source ? 'portfolio_item' : source );
+
+	// Changing the source always invalidates the selected categories, and the
+	// "media" source only supports the Columns, Overlay and Masonry layouts, so
+	// reset any unsupported layout (e.g. "eccentric") back to a supported default.
+	const onChangeSource = ( value ) => {
+		const next = { source: value, categories: [] };
+
+		if ( 'media' === value ) {
+			if ( ! [ 'list', 'grid', 'masonry' ].includes( layout ) ) {
+				next.layout = 'grid';
+			}
+		} else {
+			setLastPostType( value );
+		}
+
+		setAttributes( next );
+	};
+
 	// Normalize a Media Library object into the lean shape stored in the
 	// mediaImages attribute and consumed by the PHP renderer.
 	const mapMedia = ( media ) => {
@@ -294,10 +322,6 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 		{
 			label: __( 'Blog Posts', 'wpzoom-portfolio' ),
 			value: 'post'
-		},
-		{
-			label: __( 'Media', 'wpzoom-portfolio' ),
-			value: 'media'
 		}
 	];
 
@@ -338,22 +362,55 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 					</PanelBody>
 				)}
 				<PanelBody icon={ filterIcon } title={ __( 'Filtering', 'wpzoom-portfolio' ) } initialOpen={ sectionOpen } className="wpzb-settings-panel">
-						<SelectControl
+						<BaseControl
+							className="wpzb-source-type-control"
 							label={ __( 'Portfolio Items Source', 'wpzoom-portfolio' ) }
-							value={ source }
-							options={ customPosts }
-							onChange={ ( value ) => {
-								const next = { source: value, categories: [] };
-								// The "media" source only supports the Columns, Overlay
-								// and Masonry layouts, so reset any unsupported layout
-								// (e.g. "eccentric") back to a supported default.
-								if ( 'media' === value && ! [ 'list', 'grid', 'masonry' ].includes( layout ) ) {
-									next.layout = 'grid';
-								}
-								setAttributes( next );
-							} }
-							__next40pxDefaultSize
-						/>
+						>
+							<div
+								className="wpzb-source-type"
+								role="radiogroup"
+								aria-label={ __( 'Portfolio Items Source', 'wpzoom-portfolio' ) }
+							>
+								{ [
+									{ value: 'posts', label: __( 'Custom Posts', 'wpzoom-portfolio' ), icon: sourcePostsIcon },
+									{ value: 'media', label: __( 'Images', 'wpzoom-portfolio' ),       icon: sourceImagesIcon }
+								].map( ( option ) => {
+									const isSelected = sourceKind === option.value;
+
+									return (
+										<button
+											key={ option.value }
+											type="button"
+											role="radio"
+											aria-checked={ isSelected }
+											className={ [
+												'wpzb-source-type__option',
+												isSelected ? 'is-selected' : ''
+											].filter( Boolean ).join( ' ' ) }
+											onClick={ () => {
+												if ( isSelected ) {
+													return;
+												}
+												onChangeSource( 'media' === option.value ? 'media' : lastPostType );
+											} }
+										>
+											<span className="wpzb-source-type__icon">{ option.icon }</span>
+											<span className="wpzb-source-type__label">{ option.label }</span>
+										</button>
+									);
+								} ) }
+							</div>
+						</BaseControl>
+
+						{ 'posts' === sourceKind && (
+							<SelectControl
+								label={ __( 'Post Type', 'wpzoom-portfolio' ) }
+								value={ source }
+								options={ customPosts }
+								onChange={ onChangeSource }
+								__next40pxDefaultSize
+							/>
+						) }
 
 						{ 'media' === source && (
 							<div className="wpz-portfolio-media-control">
