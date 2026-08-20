@@ -324,6 +324,14 @@ class WPZOOM_Blocks_Portfolio {
 			'default' => [],
 			'items'   => [ 'type' => 'object' ]
 		],
+		// Static gallery only: a uniform aspect ratio applied to every image
+		// of the "media" source. Empty means "Original" — each image keeps its
+		// own proportions. Validated against a whitelist before it is emitted
+		// as CSS in render().
+		'mediaAspectRatio' => [
+			'type'    => 'string',
+			'default' => ''
+		],
 	];
 
 	/**
@@ -794,6 +802,25 @@ class WPZOOM_Blocks_Portfolio {
 				'{border-radius:' . $radius_px . ';}';
 		}
 
+		// Static gallery only: force every image to the same aspect ratio.
+		// The rule targets the <img> itself rather than its .item-thumbnail
+		// container — the container is sized by its content here, so giving
+		// *it* the ratio would leave the image overflowing at its natural
+		// height. The image already carries width:100% from the base CSS, so
+		// aspect-ratio + object-fit:cover is enough to crop it consistently.
+		// Masonry is excluded on purpose: a uniform ratio there would flatten
+		// the staggered columns into a plain grid.
+		$media_aspect_ratio = '';
+		if ( 'media' === $source && in_array( $layout, array( 'list', 'grid' ), true ) ) {
+			$ratio = isset( $attr['mediaAspectRatio'] ) ? (string) $attr['mediaAspectRatio'] : '';
+			// Whitelist — the value is interpolated straight into a declaration.
+			if ( in_array( $ratio, array( '1/1', '4/3', '3/4', '3/2', '2/3', '16/9', '9/16' ), true ) ) {
+				$media_aspect_ratio =
+					'.wpzoom-blocks_portfolio-block.' . $class_unique . ' .wpzoom-blocks_portfolio-block_item-thumbnail img' .
+					'{aspect-ratio:' . $ratio . ';height:auto;object-fit:cover;object-position:center;}';
+			}
+		}
+
 		if( isset( $attr['btnHoverBgColor'] ) || isset( $attr['btnHoverTextColor'] ) || isset( $attr['btnHoverBorderColor'] ) ) {
 
 			$btnHoverTextColor   = isset( $attr['btnHoverTextColor'] ) ? 'color:' . self::sanitize_css_value( $attr['btnHoverTextColor'] ) . ' !important;' : '';
@@ -885,6 +912,7 @@ class WPZOOM_Blocks_Portfolio {
 			$masonry_columns_gap .
 			$masonry_responsive_css .
 			$item_border_radius .
+			$media_aspect_ratio .
 			$layout_style .
 			$mobile_style
 		);

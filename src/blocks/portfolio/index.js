@@ -181,7 +181,7 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 			lightboxCaption, order, orderBy, readMoreLabel, showAuthor, showCategoryFilter, enableAjaxLoading, showDate,
 			showExcerpt, showReadMore, showThumbnail, showViewAll, source, thumbnailSize, viewAllLabel, viewAllLink, primaryColor, secondaryColor, filterActiveColor, filterAlignment, filterFontSize, filterFontFamily, filterTextTransform, filterLetterSpacing, filterFontWeight, postTitleFontSize, postTitleFontSizeMobile,
 			postTitleTextTransform, postTitleLetterSpacing, postTitleFontFamily, postTitleFontWeight, postTitleLineHeight, postTitleColor, postHoverTitleColor, btnTextColor, btnHoverTextColor, btnBgColor, btnHoverBgColor, btnFontFamily, btnFontSize, btnTextTransform, btnLetterSpacing, btnBorder, btnBorderStyle, btnBorderWidth,
-			btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, showTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction, mediaImages, albumLightbox } = attributes;
+			btnBorderColor, btnHoverBorderColor, btnBorderRadius, itemBorderRadius, showTitle, hideTitleOnHover, showTitleOnHover, alwaysPlayBackgroundVideo, layoutBgOpacity, layoutBgOpacityHover, showCategory, eccentricDarkMode, entireItemClickable, entireItemAction, mediaImages, mediaAspectRatio, albumLightbox } = attributes;
 
 	// Static images selected for the "media" Portfolio Items Source.
 	const images = Array.isArray( mediaImages ) ? mediaImages : [];
@@ -621,6 +621,26 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								</div>
 							</BaseControl>
 						</div>
+
+						{ 'media' === source && 'masonry' !== layout && (
+							<SelectControl
+								__next40pxDefaultSize
+								label={ __( 'Aspect Ratio', 'wpzoom-portfolio' ) }
+								help={ __( 'Set a consistent aspect ratio for all images in the gallery.', 'wpzoom-portfolio' ) }
+								value={ mediaAspectRatio }
+								options={ [
+									{ label: __( 'Original', 'wpzoom-portfolio' ),               value: '' },
+									{ label: __( 'Square - 1:1', 'wpzoom-portfolio' ),           value: '1/1' },
+									{ label: __( 'Standard - 4:3', 'wpzoom-portfolio' ),         value: '4/3' },
+									{ label: __( 'Portrait - 3:4', 'wpzoom-portfolio' ),         value: '3/4' },
+									{ label: __( 'Classic - 3:2', 'wpzoom-portfolio' ),          value: '3/2' },
+									{ label: __( 'Classic Portrait - 2:3', 'wpzoom-portfolio' ), value: '2/3' },
+									{ label: __( 'Wide - 16:9', 'wpzoom-portfolio' ),            value: '16/9' },
+									{ label: __( 'Tall - 9:16', 'wpzoom-portfolio' ),            value: '9/16' }
+								] }
+								onChange={ ( value ) => setAttributes( { mediaAspectRatio: value } ) }
+							/>
+						) }
 
 						{ showProModal && (
 							<Modal
