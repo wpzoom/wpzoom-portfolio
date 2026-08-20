@@ -814,9 +814,12 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 									onChange={ ( value ) => setAttributes( { lightboxCaption: value } ) }
 								/>
 							}
-							{ isPro &&
+							{ isPro && 'media' !== source &&
 								<ToggleControl
-									label={ __( 'Open Album in Lightbox', 'wpzoom-portfolio' ) }
+									label={ <>
+										{ __( 'Open Album in Lightbox', 'wpzoom-portfolio' ) }
+										<span className="wpzb-new-badge">{ __( 'New', 'wpzoom-portfolio' ) }</span>
+									</> }
 									help={ __( 'When a portfolio item has album images set, show an album icon that opens them in a lightbox gallery.', 'wpzoom-portfolio' ) }
 									checked={ albumLightbox }
 									onChange={ ( value ) => setAttributes( { albumLightbox: value } ) }

@@ -203,6 +203,24 @@
 	}
 }
 
+// Inline "New" flag for a recently added inspector option. Unlike
+// &__pro-badge (pinned to a layout button's corner) this one sits inline,
+// right after the control's label text.
+.wpzb-new-badge {
+	display: inline-block;
+	margin-left: 6px;
+	padding: 1px 5px;
+	border-radius: 2px;
+	background: #2fb344;
+	color: #fff;
+	font-size: 9px;
+	font-weight: 600;
+	line-height: 1.5;
+	letter-spacing: 0.4px;
+	text-transform: uppercase;
+	vertical-align: middle;
+}
+
 .wpzb-portfolio-video-panel .wpzb-button-select {
 	margin: 0 0 0.5em;
 }
