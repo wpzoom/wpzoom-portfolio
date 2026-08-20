@@ -32,7 +32,7 @@ import {
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
-const { __, _n, sprintf } = wp.i18n;
+import { __, _n, sprintf} from '@wordpress/i18n';
 import { groupBy } from 'lodash';
 import ServerSideRender from '@wordpress/server-side-render';
 
