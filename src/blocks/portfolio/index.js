@@ -185,6 +185,9 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 
 	// Static images selected for the "media" Portfolio Items Source.
 	const images = Array.isArray( mediaImages ) ? mediaImages : [];
+	const imageIds = images.map( ( img ) => img.id ).filter( Boolean );
+
+	const hasImages = imageIds.length > 0;
 
 	// The "Portfolio Items Source" picker is derived from the stored `source`
 	// attribute rather than a new one: "media" is the static image gallery and
@@ -229,7 +232,15 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 
 	const onSelectImages = ( selection ) => {
 		const list = Array.isArray( selection ) ? selection : [ selection ];
-		setAttributes( { mediaImages: list.filter( Boolean ).map( mapMedia ) } );
+		const seen = [];
+		const next = list.filter( Boolean ).map( mapMedia ).filter( ( img ) => {
+			if ( ! img.id || seen.includes( img.id ) ) {
+				return ! img.id;
+			}
+			seen.push( img.id );
+			return true;
+		} );
+		setAttributes( { mediaImages: next } );
 	};
 
 	const removeImage = ( index ) => {
@@ -448,11 +459,11 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 								) }
 								<MediaUploadCheck>
 									<MediaUpload
-										gallery
+										gallery={ hasImages }
 										multiple
-										addToGallery
+										addToGallery={ hasImages }
 										allowedTypes={ [ 'image' ] }
-										value={ images.map( ( img ) => img.id ).filter( Boolean ) }
+										value={ imageIds }
 										onSelect={ onSelectImages }
 										render={ ( { open } ) => (
 											<Button
@@ -1076,11 +1087,11 @@ function PortfolioEdit( { attributes, setAttributes } ) {
 					<ToolbarGroup>
 						<MediaUploadCheck>
 							<MediaUpload
-								gallery
+								gallery={ hasImages }
 								multiple
-								addToGallery
+								addToGallery={ hasImages }
 								allowedTypes={ [ 'image' ] }
-								value={ images.map( ( img ) => img.id ).filter( Boolean ) }
+								value={ imageIds }
 								onSelect={ onSelectImages }
 								render={ ( { open } ) => (
 									<ToolbarButton
