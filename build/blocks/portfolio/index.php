@@ -468,8 +468,11 @@ class WPZOOM_Blocks_Portfolio {
 
 		// Determine where the portfolio items should come from
 		$source = isset( $attr[ 'source' ] ) && ! empty( $attr[ 'source' ] ) ? $attr[ 'source' ] : 'portfolio_item';
-		// Only allow the supported post types as a source.
-		if ( ! in_array( $source, array( 'post', 'portfolio_item' ), true ) ) {
+		// Only allow the supported sources. 'post' and 'portfolio_item' are post
+		// types passed straight to WP_Query further down, so they must stay on a
+		// strict whitelist; 'media' is the static gallery, which is rendered from
+		// the mediaImages attribute and never reaches the query.
+		if ( ! in_array( $source, array( 'post', 'portfolio_item', 'media' ), true ) ) {
 			$source = 'portfolio_item';
 		}
 		if ( 'portfolio_item' == $source && ! post_type_exists( 'portfolio_item' ) ) {
