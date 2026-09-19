@@ -5,7 +5,7 @@ Author URI:        https://www.wpzoom.com/
 Requires at least: 6.5
 Requires PHP:      7.4
 Tested up to:      7.1
-Stable tag:        1.4.32
+Stable tag:        1.4.33
 License:           GNU General Public License v2
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 Tags:              portfolio, gallery, projects, image gallery, video portfolio
@@ -168,6 +168,9 @@ Yes! View the full [Plugin Documentation](https://www.wpzoom.com/documentation/w
 
 
 == Changelog ==
+
+= 1.4.33 =
+* Fixed: private and unlisted Vimeo videos (links with a privacy hash, e.g. vimeo.com/ID/HASH or player.vimeo.com/video/ID?h=HASH) did not play in the video lightbox because the privacy hash was dropped from the embed URL
 
 = 1.4.32 =
 * New feature: Static Gallery — the Portfolio block now has a "Portfolio Items Source" option, so you can build a gallery straight from images in the Media Library, without creating portfolio posts first.
