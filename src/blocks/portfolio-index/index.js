@@ -128,6 +128,7 @@
 							],
 							onChange: function ( v ) { setAttributes( { mediaRatio: v } ); },
 						} ),
+						range( __( 'Media corner radius (px)', 'wpzoom-portfolio' ), 'mediaRadius', 0, 48 ),
 						toggle( __( 'Show year', 'wpzoom-portfolio' ), 'showYear' ),
 						toggle( __( 'Show director & client', 'wpzoom-portfolio' ), 'showDetails' ),
 						toggle( __( 'Show excerpt', 'wpzoom-portfolio' ), 'showExcerpt' ),

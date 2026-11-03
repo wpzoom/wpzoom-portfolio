@@ -44,6 +44,7 @@ class WPZOOM_Blocks_Portfolio_Index {
 		'openFirst'      => array( 'type' => 'boolean', 'default' => true ),
 		'previewVideo'   => array( 'type' => 'boolean', 'default' => true ),
 		'mediaRatio'     => array( 'type' => 'string', 'default' => '16/9' ),
+		'mediaRadius'    => array( 'type' => 'number', 'default' => 0 ),
 		'showYear'       => array( 'type' => 'boolean', 'default' => true ),
 		'showDetails'    => array( 'type' => 'boolean', 'default' => true ),
 		'showExcerpt'    => array( 'type' => 'boolean', 'default' => true ),
@@ -202,6 +203,7 @@ class WPZOOM_Blocks_Portfolio_Index {
 			max( 12, (int) $a['titleSize'] ),
 			max( 12, (int) $a['panelTitleSize'] )
 		);
+		$vars .= '--wpz-pindex-radius:' . max( 0, (int) $a['mediaRadius'] ) . 'px;';
 		if ( $a['textColor'] ) {
 			$vars .= 'color:' . sanitize_hex_color( $a['textColor'] ) . ';--wpz-pindex-rail:' . sanitize_hex_color( $a['textColor'] ) . ';';
 		}
