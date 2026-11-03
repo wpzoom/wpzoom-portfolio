@@ -13,6 +13,7 @@ The ultimate WordPress portfolio plugin to showcase your work in style. Create b
 - **Portfolio Posts** - Create dedicated portfolio items
 - **Reusable Portfolio Layouts** - Create once, use anywhere
 - **Portfolio Block** - Native Gutenberg block
+- **Portfolio Index Block** - Numbered project list with hover video previews and in-place playback
 - **Portfolio Layout Block & Shortcode** - Insert in any page builder (Elementor, Beaver Builder, etc.)
 - **Blog Posts Support** - Works with regular blog posts too
 - **Isotope Filtering Effect** - Category filter with smooth animations
