@@ -16,7 +16,7 @@
 	registerBlockType( 'wpzoom-blocks/portfolio-index', {
 		apiVersion: 3,
 		title: __( 'Portfolio Index', 'wpzoom-portfolio' ),
-		description: __( 'A numbered list of projects. Hovering a title previews the project beside the list, clicking keeps it open.', 'wpzoom-portfolio' ),
+		description: __( 'A numbered list of projects. Hovering a title previews the project beside the list, and the preview stays while you move the cursor to it.', 'wpzoom-portfolio' ),
 		icon: 'editor-ol',
 		category: 'wpzoom-blocks',
 		keywords: [ __( 'portfolio', 'wpzoom-portfolio' ), __( 'index', 'wpzoom-portfolio' ), __( 'video', 'wpzoom-portfolio' ), __( 'projects', 'wpzoom-portfolio' ) ],
